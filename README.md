@@ -1,7 +1,7 @@
 # 코딩테스트 연습을 위한 페이지
 
 ## BaekjoonHub
-백준 코딩사이트 링크 -> [BaekjoonHub](https://github.com/BaekjoonHub/BaekjoonHub).   
+백준 코딩사이트 링크 -> [BaekjoonHub](https://github.com/BaekjoonHub/BaekjoonHub)  
 백준 코딩테스트 결과 자동업로드  
   
 ## Programmers
