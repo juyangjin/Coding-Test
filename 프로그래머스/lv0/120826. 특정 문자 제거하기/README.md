@@ -67,5 +67,18 @@
 <li>"BCBdbe" 에서 "B"를 모두 제거한 "Cdbe"를 return합니다.</li>
 </ul>
 
+#### 타인이 푼 조금 더 완벽한 코드
+```
+class Solution {
+    public String solution(String my_string, String letter) {
+        String answer = ""; //answer값 초기화
+
+        answer = my_string.replace(letter, ""); //letter값을 ""로 바꾼 후 answer에 저장
+
+        return answer; //결과값 출력
+    }
+}
+```
+
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://programmers.co.kr/learn/challenges
