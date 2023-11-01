@@ -13,8 +13,8 @@ class Solution {
             for(int j=2;j<=n;){
                 int temp = j;
                 j += 2;
-                int val = temp * temp;
-                answer += val;
+                temp *= temp;
+                answer += temp;
                  
             }
         }        
