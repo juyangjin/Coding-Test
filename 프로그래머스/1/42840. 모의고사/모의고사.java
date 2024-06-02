@@ -21,9 +21,12 @@ class Solution {
             if(M == result[i]) answer.add(i+1);
         } // 최댓값 M과 result[i] 값이 동일하다면 answer에 해당 인덱스의 값+1을 추가한다.(0부터 인덱스가 시작되기 때문)
         
-        int[] sum = answer.stream() //answer을 stream으로 변환
-                    .mapToInt(i -> i) //mapToInt로 인덱스 값을 할당
-                    .toArray(); //ArrayList형식에서 변환되는 것이기 때문에 toArray();로 마무리
+        int[] sum = new int[answer.size()];
+        int j = 0;
+        for(int S : answer){
+            sum[j++] = S;
+        }
+        
         
         return sum; //int 배열인 sum을 return
     }
