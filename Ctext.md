@@ -22,3 +22,34 @@
    1.프로그래머스 0단계는 11월 중순 이전에 마치도록 하기(하루 5개는 해야하지만, 그래도 어쩔 수 없다!)  
    2.백준은 아직 조금 어렵지만, 그래도 꾸준히 도전하기  
    3.코딩테스트 순서도는 `JAVA > C > Python > C++ > Swift` __일단 JAVA 0단계를 마치면 C언어 0단계와 JAVA 1단계 병행하는 식으로 중첩공부__
+
+   ### 푸는 중 연습문제
+
+   import java.io.inputStreamReader;
+import java.io.BufferedReader;
+import java.util.StringTokenizer;
+
+public class Main{
+    public static void main(String[] args){
+        BufferedReader bf =
+            new BufferedReader(new IntputStreamReader(System.in));
+        StringTokenizer str =
+            new StringTokenizer(bf.readLine());
+        
+        int N = Integer.parseInt(str.nextToken());
+        int M = Integer.parseInt(str.nextToken());
+        for(int i=1;i<=N;i++){
+            str = new StringTokenizer(bf.readLine());
+            for(int j=1;j<=N;j++){
+                A[i][j] = Integer.parseInt(str.nextToken());
+            }
+        }
+            
+        for(int i=1;i<=N;i++){
+            for(int j=1;j<=N;j++){
+                D[i][j] =
+            }
+        }
+        }
+    }
+}
