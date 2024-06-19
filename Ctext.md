@@ -23,19 +23,20 @@
    2.백준은 아직 조금 어렵지만, 그래도 꾸준히 도전하기  
    3.코딩테스트 순서도는 `JAVA > C > Python > C++ > Swift` __일단 JAVA 0단계를 마치면 C언어 0단계와 JAVA 1단계 병행하는 식으로 중첩공부__
 
-   ### 푸는 중 연습문제
-
-   import java.io.inputStreamReader;
+   ### 백준 미풀이 문제 구간 합 구하기 11660
+```JAVA
+import java.io.inputStreamReader;
 import java.io.BufferedReader;
 import java.util.StringTokenizer;
 
 public class Main{
     public static void main(String[] args){
+    
         BufferedReader bf =
             new BufferedReader(new IntputStreamReader(System.in));
         StringTokenizer str =
             new StringTokenizer(bf.readLine());
-        
+            
         int N = Integer.parseInt(str.nextToken());
         int M = Integer.parseInt(str.nextToken());
         for(int i=1;i<=N;i++){
@@ -53,3 +54,4 @@ public class Main{
         }
     }
 }
+```
