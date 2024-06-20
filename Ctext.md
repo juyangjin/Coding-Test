@@ -25,33 +25,5 @@
 
    ### 백준 미풀이 문제 구간 합 구하기 11660
 ```JAVA
-import java.io.inputStreamReader;
-import java.io.BufferedReader;
-import java.util.StringTokenizer;
 
-public class Main{
-    public static void main(String[] args){
-    
-        BufferedReader bf =
-            new BufferedReader(new IntputStreamReader(System.in));
-        StringTokenizer str =
-            new StringTokenizer(bf.readLine());
-            
-        int N = Integer.parseInt(str.nextToken());
-        int M = Integer.parseInt(str.nextToken());
-        for(int i=1;i<=N;i++){
-            str = new StringTokenizer(bf.readLine());
-            for(int j=1;j<=N;j++){
-                A[i][j] = Integer.parseInt(str.nextToken());
-            }
-        }
-            
-        for(int i=1;i<=N;i++){
-            for(int j=1;j<=N;j++){
-                D[i][j] =
-            }
-        }
-        }
-    }
-}
 ```
