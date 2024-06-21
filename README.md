@@ -15,6 +15,10 @@
 |2557. Hello World|[링크](./%EB%B0%B1%EC%A4%80/Bronze/2557.%E2%80%85Hello%E2%80%85World/Hello%E2%80%85World.java)|
 |2739. 구구단|[링크](./%EB%B0%B1%EC%A4%80/Bronze/2739.%E2%80%85%EA%B5%AC%EA%B5%AC%EB%8B%A8/%EA%B5%AC%EA%B5%AC%EB%8B%A8.java)|
 |2750. 수 정렬하기|[링크](./%EB%B0%B1%EC%A4%80/Bronze/2750.%E2%80%85%EC%88%98%E2%80%85%EC%A0%95%EB%A0%AC%ED%95%98%EA%B8%B0/%EC%88%98%E2%80%85%EC%A0%95%EB%A0%AC%ED%95%98%EA%B8%B0.java)|
+### 🚀 Gold
+| 문제번호 | 링크 |
+| ----- | ----- |
+|10986. 나머지 합|[링크](./%EB%B0%B1%EC%A4%80/Gold/10986.%E2%80%85%EB%82%98%EB%A8%B8%EC%A7%80%E2%80%85%ED%95%A9/%EB%82%98%EB%A8%B8%EC%A7%80%E2%80%85%ED%95%A9.java)|
 ### 🚀 Silver
 | 문제번호 | 링크 |
 | ----- | ----- |
