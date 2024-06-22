@@ -25,5 +25,39 @@
 
    ### 백준 미풀이 
 ```JAVA
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.util.StringTokenizer;
 
+public class Main{
+    public static void main(String[] args) throw IOException {
+        Scanner sc = new Scanner(System.in);
+        long N = sc.nextLong();
+        long M = sc.nextLong();
+        long K = sc.nextLong();
+        long[] A = new long[N++];
+        long tmp, sum = 0;
+        
+        for(int i=1;i<=(int)N;i++){
+            A[i] = sc.nextLong();
+        }//원본 배열 할당
+        
+        for(int i=1;i<=(int)K;i++){
+            long one = sc.nextLong();
+            long two = sc.nextLong();
+            long three = sc.nextLong();
+            if(one == 1){
+                A[two] = three;
+            }
+            else{
+                for(int j=two;j<=three;j++){
+                    tmp = A[j];
+                    sum += tmp;
+                }
+            }
+        }
+        System.out.println(sum);
+    }
+}
 ```
