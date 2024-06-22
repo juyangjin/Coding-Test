@@ -23,7 +23,7 @@
    2.백준은 아직 조금 어렵지만, 그래도 꾸준히 도전하기  
    3.코딩테스트 순서도는 `JAVA > C > Python > C++ > Swift` __일단 JAVA 0단계를 마치면 C언어 0단계와 JAVA 1단계 병행하는 식으로 중첩공부__
 
-   ### 백준 미풀이 
+   ### 백준 미풀이 2042번 bufferedReader로 고칠 예정
 ```JAVA
 import java.io.IOException;
 import java.io.InputStreamReader;
