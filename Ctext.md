@@ -23,7 +23,7 @@
    2.백준은 아직 조금 어렵지만, 그래도 꾸준히 도전하기  
    3.코딩테스트 순서도는 `JAVA > C > Python > C++ > Swift` __일단 JAVA 0단계를 마치면 C언어 0단계와 JAVA 1단계 병행하는 식으로 중첩공부__
 
-   ### 백준 미풀이 2042번 bufferedReader로 고칠 예정
+   ### 백준 2042번 eclipse에서는 이상없이 실행되지만 백준에서는 에러나는 코드
 ```JAVA
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,33 +31,39 @@ import java.io.BufferedReader;
 import java.util.StringTokenizer;
 
 public class Main{
-    public static void main(String[] args) throw IOException {
-        Scanner sc = new Scanner(System.in);
-        long N = sc.nextLong();
-        long M = sc.nextLong();
-        long K = sc.nextLong();
-        long[] A = new long[N++];
-        long tmp, sum = 0;
-        
-        for(int i=1;i<=(int)N;i++){
-            A[i] = sc.nextLong();
-        }//원본 배열 할당
-        
-        for(int i=1;i<=(int)K;i++){
-            long one = sc.nextLong();
-            long two = sc.nextLong();
-            long three = sc.nextLong();
-            if(one == 1){
-                A[two] = three;
-            }
-            else{
-                for(int j=two;j<=three;j++){
-                    tmp = A[j];
-                    sum += tmp;
+    public static void main(String[] args) throws IOException {
+        BufferedReader bf =
+            new BufferedReader(new InputStreamReader(System.in));
+            StringTokenizer st =
+            new StringTokenizer(bf.readLine());
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+        int K = Integer.parseInt(st.nextToken());
+
+        int[] A = new int[N+1];
+        int[] S = new int[N+1];
+           
+        for(int i=1;i<=N;i++){
+            st = new StringTokenizer(bf.readLine());
+            A[i] = Integer.parseInt(st.nextToken());
+        }//원본 배열 만들기
+
+        for(int i=1;i<=K+M;i++){
+            	st = new StringTokenizer(bf.readLine());
+                int one = Integer.parseInt(st.nextToken());
+                int two = Integer.parseInt(st.nextToken());
+                int three = Integer.parseInt(st.nextToken());
+                
+                if(one == 1){
+                    A[two] = three;
+                    for(int q=1;q<=N;q++){
+                        S[q] = S[q-1] + A[q];
+                    }//합배열 만들기 
                 }
-            }
+                else if(one == 2){
+                   System.out.println(S[three] - S[two-1]);
+                }		
         }
-        System.out.println(sum);
     }
 }
 ```
