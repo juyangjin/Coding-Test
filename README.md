@@ -19,6 +19,7 @@
 |2557. Hello World|[링크](./%EB%B0%B1%EC%A4%80/Bronze/2557.%E2%80%85Hello%E2%80%85World/Hello%E2%80%85World.java)|
 |2739. 구구단|[링크](./%EB%B0%B1%EC%A4%80/Bronze/2739.%E2%80%85%EA%B5%AC%EA%B5%AC%EB%8B%A8/%EA%B5%AC%EA%B5%AC%EB%8B%A8.java)|
 |2750. 수 정렬하기|[링크](./%EB%B0%B1%EC%A4%80/Bronze/2750.%E2%80%85%EC%88%98%E2%80%85%EC%A0%95%EB%A0%AC%ED%95%98%EA%B8%B0/%EC%88%98%E2%80%85%EC%A0%95%EB%A0%AC%ED%95%98%EA%B8%B0.java)|
+|2753. 윤년|[링크](./%EB%B0%B1%EC%A4%80/Bronze/2753.%E2%80%85%EC%9C%A4%EB%85%84/README.md)|
 |9498. 시험 성적|[링크](./%EB%B0%B1%EC%A4%80/Bronze/9498.%E2%80%85%EC%8B%9C%ED%97%98%E2%80%85%EC%84%B1%EC%A0%81/%EC%8B%9C%ED%97%98%E2%80%85%EC%84%B1%EC%A0%81.java)|
 ### 🚀 Gold
 | 문제번호 | 링크 |
