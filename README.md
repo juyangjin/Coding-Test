@@ -47,6 +47,7 @@
 |2884. 알람 시계|[링크](./%EB%B0%B1%EC%A4%80/Bronze/2884.%E2%80%85%EC%95%8C%EB%9E%8C%E2%80%85%EC%8B%9C%EA%B3%84/README.md)|
 |3052. 나머지|[링크](./%EB%B0%B1%EC%A4%80/Bronze/3052.%E2%80%85%EB%82%98%EB%A8%B8%EC%A7%80/%EB%82%98%EB%A8%B8%EC%A7%80.java)|
 |8393. 합|[링크](./%EB%B0%B1%EC%A4%80/Bronze/8393.%E2%80%85%ED%95%A9/README.md)|
+|8958. OX퀴즈|[링크](./%EB%B0%B1%EC%A4%80/Bronze/8958.%E2%80%85OX%ED%80%B4%EC%A6%88/README.md)|
 |9498. 시험 성적|[링크](./%EB%B0%B1%EC%A4%80/Bronze/9498.%E2%80%85%EC%8B%9C%ED%97%98%E2%80%85%EC%84%B1%EC%A0%81/%EC%8B%9C%ED%97%98%E2%80%85%EC%84%B1%EC%A0%81.java)|
 ### 🚀 Gold
 | 문제번호 | 링크 |
