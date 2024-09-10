@@ -1,10 +1,10 @@
 # [level 0] 나머지 구하기 - 120810 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/120810) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/120810?language=c) 
 
 ### 성능 요약
 
-메모리: 74.2 MB, 시간: 0.02 ms
+메모리: 4.21 MB, 시간: 0.01 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 06월 18일 10:48:52
+2024년 09월 10일 19:16:39
 
 ### 문제 설명
 
