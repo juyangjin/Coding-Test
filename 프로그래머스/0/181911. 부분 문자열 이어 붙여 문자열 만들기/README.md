@@ -1,10 +1,10 @@
 # [level 0] 부분 문자열 이어 붙여 문자열 만들기 - 181911 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181911) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181911?language=c) 
 
 ### 성능 요약
 
-메모리: 73.8 MB, 시간: 2.13 ms
+메모리: 4.13 MB, 시간: 0.03 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 06월 18일 10:56:40
+2024년 09월 14일 12:06:01
 
 ### 문제 설명
 
@@ -60,43 +60,21 @@
 <p>입출력 예 #1</p>
 
 <ul>
-<li><p>예제 1번의 입력을 보기 좋게 표로 나타내면 다음과 같습니다.</p>
-<table class="table">
-        <thead><tr>
-<th>i</th>
-<th>my_strings[i]</th>
-<th>parts[i]</th>
-<th>부분 문자열</th>
-</tr>
-</thead>
-        <tbody><tr>
-<td>0</td>
-<td>"progressive"</td>
-<td>[0, 4]</td>
-<td>"progr"</td>
-</tr>
-<tr>
-<td>1</td>
-<td>"hamburger"</td>
-<td>[1, 2]</td>
-<td>"am"</td>
-</tr>
-<tr>
-<td>2</td>
-<td>"hammer"</td>
-<td>[3, 5]</td>
-<td>"mer"</td>
-</tr>
-<tr>
-<td>3</td>
-<td>"ahocorasick"</td>
-<td>[7, 7]</td>
-<td>"s"</td>
-</tr>
-</tbody>
-      </table>
-<p>각 부분 문자열을 순서대로 이어 붙인 문자열은 "programmers"입니다. 따라서 "programmers"를 return 합니다.</p></li>
+<li>예제 1번의 입력을 보기 좋게 표로 나타내면 다음과 같습니다.</li>
 </ul>
 
+<p>|i|my_strings[i]|parts[i]|부분 문자열|</p>
+
+<p>|-|-------------|--------|--------|</p>
+
+<p>|0|"progressive"|[0, 4]|"progr"|</p>
+
+<p>|1|"hamburger"|[1, 2]|"am"|</p>
+
+<p>|2|"hammer"|[3, 5]|"mer"|</p>
+
+<p>|3|"ahocorasick"|[7, 7]|"s"|</p>
+<div class="highlight"><pre class="codehilite"><code>각 부분 문자열을 순서대로 이어 붙인 문자열은 "programmers"입니다. 따라서 "programmers"를 return 합니다.
+</code></pre></div>
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
