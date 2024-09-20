@@ -1,10 +1,10 @@
 # [level 0] 정수 부분 - 181850 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181850?language=c) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181850?language=python3) 
 
 ### 성능 요약
 
-메모리: 4.14 MB, 시간: 0.01 ms
+메모리: 10.2 MB, 시간: 0.00 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 09월 20일 11:03:35
+2024년 09월 20일 11:04:09
 
 ### 문제 설명
 
