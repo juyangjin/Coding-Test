@@ -1,10 +1,10 @@
 # [level 0] 꼬리 문자열 - 181841 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181841) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181841?language=c) 
 
 ### 성능 요약
 
-메모리: 74.9 MB, 시간: 1.80 ms
+메모리: 4.02 MB, 시간: 0.01 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 06월 18일 10:56:02
+2024년 09월 21일 12:06:26
 
 ### 문제 설명
 
