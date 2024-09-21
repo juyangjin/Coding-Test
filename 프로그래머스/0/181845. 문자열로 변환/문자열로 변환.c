@@ -4,7 +4,7 @@
 #include <string.h>
 
 char* solution(int n) {
-    char* answer = (char*)malloc(n * sizeof(int));
+    char* answer = (char*)malloc(5 * sizeof(int));
     sprintf(answer, "%d", n);
     
     return answer;
