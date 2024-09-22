@@ -1,10 +1,10 @@
 # [level 0] l로 만들기 - 181834 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181834) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181834?language=c) 
 
 ### 성능 요약
 
-메모리: 85.8 MB, 시간: 30.31 ms
+메모리: 4.16 MB, 시간: 0.12 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 09월 22일 20:36:12
+2024년 09월 22일 20:43:28
 
 ### 문제 설명
 
