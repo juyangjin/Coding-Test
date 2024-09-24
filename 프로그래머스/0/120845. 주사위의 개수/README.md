@@ -1,10 +1,10 @@
 # [level 0] 주사위의 개수 - 120845 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/120845?language=java) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/120845?language=c) 
 
 ### 성능 요약
 
-메모리: 73.8 MB, 시간: 0.03 ms
+메모리: 4.48 MB, 시간: 0.01 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 09월 24일 10:26:43
+2024년 09월 24일 10:27:47
 
 ### 문제 설명
 
