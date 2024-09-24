@@ -1,10 +1,10 @@
 # [level 0] 특별한 이차원 배열 1 - 181833 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181833?language=c) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181833?language=python3) 
 
 ### 성능 요약
 
-메모리: 5.19 MB, 시간: 2.83 ms
+메모리: 11 MB, 시간: 1.37 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 09월 24일 11:56:32
+2024년 09월 24일 12:00:12
 
 ### 문제 설명
 
