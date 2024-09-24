@@ -1,10 +1,10 @@
 # [level 0] 짝수 홀수 개수 - 120824 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/120824?language=c) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/120824?language=python3) 
 
 ### 성능 요약
 
-메모리: 4.52 MB, 시간: 0.01 ms
+메모리: 10.3 MB, 시간: 0.01 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 09월 14일 15:25:12
+2024년 09월 24일 13:19:36
 
 ### 문제 설명
 
