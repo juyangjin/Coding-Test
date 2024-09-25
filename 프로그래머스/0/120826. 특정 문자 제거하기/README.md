@@ -1,10 +1,10 @@
 # [level 0] 특정 문자 제거하기 - 120826 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/120826) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/120826?language=c) 
 
 ### 성능 요약
 
-메모리: 71.5 MB, 시간: 0.03 ms
+메모리: 4.45 MB, 시간: 0.02 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 06월 18일 11:10:28
+2024년 09월 25일 10:15:44
 
 ### 문제 설명
 
