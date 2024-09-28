@@ -12,7 +12,7 @@ class Solution {
         
         int[] answer = new int[list.size()];
         int len = 0;
-        Collections.sort(list);
+        Collections.sort(list); //integer이면 Arrays.sort를 사용하고 ArrayList<Integer> 이면 Collections.sort를 사용한다.
         for(int a:list){
             answer[len++] = a;
         }
