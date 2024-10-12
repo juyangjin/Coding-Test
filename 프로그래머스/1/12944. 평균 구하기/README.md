@@ -1,10 +1,10 @@
 # [level 1] 평균 구하기 - 12944 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/12944?language=c) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/12944?language=python) 
 
 ### 성능 요약
 
-메모리: 4.16 MB, 시간: 0.01 ms
+메모리: 7.64 MB, 시간: 0.01 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 10월 12일 11:43:43
+2024년 10월 12일 11:56:56
 
 ### 문제 설명
 
