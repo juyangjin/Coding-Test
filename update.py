@@ -92,7 +92,8 @@ def main():
             content += "| 문제번호 | 해설 | 언어 | 링크 |\n"
             content += "| ----- | ----- | ---- | ----- |\n"
             for problem in baekjoon_problems[level]:
-                content += f"| {problem['problem']} | {problem['link']} | {problem['language']} | [링크](./{problem['problem']}.java) |\n"
+                file_extension = get_file_extension(problem['language'])
+                content += f"| {problem['problem']} | {problem['link']} | {problem['language']} | [링크](./{problem['problem']}{file_extension}) |\n"
             content += "\n"
 
     # 프로그래머스 문제 목록 추가
@@ -105,7 +106,8 @@ def main():
             content += "| 문제번호 | 해설 | 언어 | 링크 |\n"
             content += "| ----- | ----- | ---- | ----- |\n"
             for problem in programmers_problems[level]:
-                content += f"| {problem['problem']} | {problem['link']} | {problem['language']} | [링크](./{problem['problem']}.py) |\n"
+                file_extension = get_file_extension(problem['language'])
+                content += f"| {problem['problem']} | {problem['link']} | {problem['language']} | [링크](./{problem['problem']}{file_extension}) |\n"
             content += "\n"
 
     # 최종적으로 생성된 내용으로 Ctext.md 파일을 덮어쓰기
@@ -146,6 +148,16 @@ def determine_language(file_name):
         return "C++"
     # 필요에 따라 다른 언어 추가 가능
     return "Unknown"
+
+def get_file_extension(language):
+    """언어에 맞는 파일 확장자를 반환"""
+    if language == "Python":
+        return ".py"
+    elif language == "Java":
+        return ".java"
+    elif language == "C++":
+        return ".cpp"
+    return ""
 
 if __name__ == "__main__":
     main()
