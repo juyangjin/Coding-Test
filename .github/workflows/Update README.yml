@@ -30,7 +30,7 @@ jobs:
           fi
 
       - name: Generate README
-        run: python generate_readme.py
+        run: update.py
 
       - name: Commit changes
         run: |
