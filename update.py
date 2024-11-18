@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import os
-from urllib import parse
 
 # 기존 README 파일 경로
 EXISTING_CONTENT_PATH = "README.md"  # 기존 README 파일
@@ -11,14 +10,14 @@ NEW_SECTION_HEADER = "## 📚 백준 문제 풀이 목록"  # 새로 추가할 �
 PROGRAMMERS_LEVELS = ["0단계", "1단계", "2단계", "3단계", "4단계"]
 BAEKJOON_LEVELS = ["Bronze", "Silver", "Gold"]
 
-# 기존 README.md 파일을 읽고, 새로운 문제 목록을 추가하는 함수
 def main():
-    # 기존 README.md 파일이 없다면 새로 생성
+    # README.md 파일이 없다면 새로 생성
     if os.path.exists(EXISTING_CONTENT_PATH):
         with open(EXISTING_CONTENT_PATH, "r", encoding="utf-8") as f:
             existing_content = f.read()
     else:
-        existing_content = "# 백준, 프로그래머스 문제 풀이 목록\n\n"  # 파일이 없다면 새로 작성할 기본 내용
+        # 파일이 없다면 기본 내용을 삽입하여 새로 생성
+        existing_content = "# 백준, 프로그래머스 문제 풀이 목록\n\n"  # 기본 내용 추가
 
     # 기존 내용을 그대로 가져오고 새로운 문제 목록을 추가할 준비
     content = existing_content  # 기존 내용을 그대로 가져옵니다.
@@ -136,22 +135,3 @@ def determine_baekjoon_level(file_name):
 # 파일 확장자에 따른 언어 결정
 def determine_language(file_name):
     if file_name.endswith(".py"):
-        return "Python"
-    elif file_name.endswith(".java"):
-        return "Java"
-    elif file_name.endswith(".cpp"):
-        return "C++"
-    return "Unknown"
-
-# 언어에 맞는 파일 확장자를 반환
-def get_file_extension(language):
-    if language == "Python":
-        return ".py"
-    elif language == "Java":
-        return ".java"
-    elif language == "C++":
-        return ".cpp"
-    return ""
-
-if __name__ == "__main__":
-    main()
