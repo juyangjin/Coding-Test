@@ -1,6 +1,8 @@
-#!/usr/bin/env python
-
 import os
+
+HEADER = """#
+# 백준, 프로그래머스 문제 풀이 목록
+"""
 
 # 기존 README 파일 경로
 EXISTING_CONTENT_PATH = "README.md"  # 기존 README 파일
@@ -22,6 +24,8 @@ def main():
     # 기존 내용을 그대로 가져오고 새로운 문제 목록을 추가할 준비
     content = existing_content  # 기존 내용을 그대로 가져옵니다.
     content += "\n\n"  # 기존 내용 뒤에 새로운 문제 목록을 추가
+
+    content += HEADER  # 새로운 헤더 추가
 
     # 문제 목록을 난이도별로 나누기 위한 딕셔너리
     programmers_problems = {level: [] for level in PROGRAMMERS_LEVELS}
@@ -58,7 +62,8 @@ def main():
                     programmers_problems[level].append({
                         "problem": file.split(".")[0],
                         "link": problem_link,
-                        "language": language
+                        "language": language,
+                        "file_name": file.replace('.md', '')  # 해당 문제 파일 이름
                     })
 
         # 백준 문제 처리
@@ -71,7 +76,8 @@ def main():
                     baekjoon_problems[level].append({
                         "problem": file.split(".")[0],
                         "link": problem_link,
-                        "language": language
+                        "language": language,
+                        "file_name": file.replace('.md', '')  # 해당 문제 파일 이름
                     })
 
     # README.md 내용에 백준 문제 목록 추가
@@ -85,8 +91,10 @@ def main():
             content += "| 문제번호 | 해설 | 언어 | 링크 |\n"
             content += "| ----- | ----- | ---- | ----- |\n"
             for problem in baekjoon_problems[level]:
+                # 문제에 해당하는 언어와 파일 확장자에 맞춰 링크 수정
                 file_extension = get_file_extension(problem['language'])
-                content += f"| {problem['problem']} | {problem['link']} | {problem['language']} | [링크](./{problem['problem']}{file_extension}) |\n"
+                language_link = f"[{problem['language']}](./{problem['file_name']}{file_extension})"
+                content += f"| {problem['problem']} | {problem['link']} | {language_link} | [링크](./{problem['file_name']}{file_extension}) |\n"
             content += "</details>\n\n"  # 접기 끝
 
     # 프로그래머스 문제 목록 추가
@@ -100,8 +108,10 @@ def main():
             content += "| 문제번호 | 해설 | 언어 | 링크 |\n"
             content += "| ----- | ----- | ---- | ----- |\n"
             for problem in programmers_problems[level]:
+                # 문제에 해당하는 언어와 파일 확장자에 맞춰 링크 수정
                 file_extension = get_file_extension(problem['language'])
-                content += f"| {problem['problem']} | {problem['link']} | {problem['language']} | [링크](./{problem['problem']}{file_extension}) |\n"
+                language_link = f"[{problem['language']}](./{problem['file_name']}{file_extension})"
+                content += f"| {problem['problem']} | {problem['link']} | {language_link} | [링크](./{problem['file_name']}{file_extension}) |\n"
             content += "</details>\n\n"  # 접기 끝
 
     # 최종적으로 생성된 내용으로 README.md 파일을 덮어쓰기
@@ -135,3 +145,27 @@ def determine_baekjoon_level(file_name):
 # 파일 확장자에 따른 언어 결정
 def determine_language(file_name):
     if file_name.endswith(".py"):
+        return "Python"
+    elif file_name.endswith(".java"):
+        return "Java"
+    elif file_name.endswith(".cpp"):
+        return "C++"
+    elif file_name.endswith(".sql"):
+        return "SQL"
+    # 다른 언어가 추가될 경우 여기에 조건 추가
+    return "Unknown"
+
+# 파일 확장자 구하기
+def get_file_extension(language):
+    if language == "Python":
+        return ".py"
+    elif language == "Java":
+        return ".java"
+    elif language == "C++":
+        return ".cpp"
+    elif language == "SQL":
+        return ".sql"
+    return ""
+
+if __name__ == "__main__":
+    main()
