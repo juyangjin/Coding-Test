@@ -28,6 +28,7 @@ def main():
     
     directories = set()
     problems = defaultdict(lambda: {"explanation": "", "files": []})  # 문제번호별로 그룹화
+    difficulty_order = ['Bronze', 'Silver', 'Gold', 'Platinum', '백준', '프로그래머스']  # 난이도 순서
 
     for root, dirs, files in os.walk("."):
         dirs.sort()
@@ -47,12 +48,12 @@ def main():
         if directory == '.':
             continue
         
-        # 기존 카테고리 (브론즈, 실버 등)별로 처리
+        # 문제별 카테고리 (예: Bronze, Silver) 처리
         if directory not in directories:
-            content += f"## 📚 {directory}\n"
-            directories.add(directory)
+            if directory in difficulty_order:
+                content += f"## 📚 {directory}\n"
+                directories.add(directory)
         
-        # 문제번호별로 그룹화하여 문제 정보 수집
         problem_id = os.path.basename(root)  # 문제번호 추출 (폴더 이름을 문제번호로 가정)
         problem_link = parse.quote(os.path.join(root, "README.md"))  # 문제해설 링크 (README.md로 가정)
         
