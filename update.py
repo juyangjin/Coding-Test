@@ -74,9 +74,9 @@ def main():
         content += "| 문제번호 | 해설 | 언어 | 링크 |\n"
         content += "| ----- | ----- | ---- | ----- |\n"
         
-        if explanation:
-            content += f"| {problem_id} | [해설]({explanation}) |"
-
+        # 문제번호, 해설 출력
+        content += f"| {problem_id} | [해설]({explanation}) |"
+        
         languages = []  # 언어별 풀이 파일 링크를 저장할 리스트
         for language, file_path in data["files"]:
             languages.append(f"[{language}]({parse.quote(file_path)})")
