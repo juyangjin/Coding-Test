@@ -4,34 +4,32 @@ HEADER = """#
 # 백준, 프로그래머스 문제 풀이 목록
 """
 
-# 기존 README 파일 경로
 EXISTING_CONTENT_PATH = "README.md"  # 기존 README 파일
 NEW_SECTION_HEADER = "## 📚 백준 문제 풀이 목록"  # 새로 추가할 섹션 제목
 
-# 문제를 난이도별로 나누기 위한 기준
 PROGRAMMERS_LEVELS = ["0단계", "1단계", "2단계", "3단계", "4단계"]
 BAEKJOON_LEVELS = ["Bronze", "Silver", "Gold"]
 
 def main():
+    print("스캔 시작")
     # README.md 파일이 없다면 새로 생성
     if os.path.exists(EXISTING_CONTENT_PATH):
+        print(f"기존 파일 {EXISTING_CONTENT_PATH} 읽기...")
         with open(EXISTING_CONTENT_PATH, "r", encoding="utf-8") as f:
             existing_content = f.read()
     else:
-        # 파일이 없다면 기본 내용을 삽입하여 새로 생성
+        print(f"기존 파일 {EXISTING_CONTENT_PATH}가 없으므로 새로 생성합니다.")
         existing_content = "# 백준, 프로그래머스 문제 풀이 목록\n\n"  # 기본 내용 추가
 
-    # 기존 내용을 그대로 가져오고 새로운 문제 목록을 추가할 준비
     content = existing_content  # 기존 내용을 그대로 가져옵니다.
     content += "\n\n"  # 기존 내용 뒤에 새로운 문제 목록을 추가
 
     content += HEADER  # 새로운 헤더 추가
 
-    # 문제 목록을 난이도별로 나누기 위한 딕셔너리
     programmers_problems = {level: [] for level in PROGRAMMERS_LEVELS}
     baekjoon_problems = {level: [] for level in BAEKJOON_LEVELS}
 
-    # 문제 파일을 순회하여 적절한 목록에 추가
+    print("디렉토리 순회 시작")
     for root, dirs, files in os.walk("."):
         dirs.sort()
         if root == '.':
@@ -52,7 +50,6 @@ def main():
         if directory == '.':
             continue
 
-        # 프로그래머스 문제 처리
         if directory == "프로그래머스":
             for file in files:
                 level = determine_programmers_level(file)
@@ -66,7 +63,6 @@ def main():
                         "file_name": file.replace('.md', '')  # 해당 문제 파일 이름
                     })
 
-        # 백준 문제 처리
         elif directory == "백준":
             for file in files:
                 level = determine_baekjoon_level(file)
@@ -80,10 +76,9 @@ def main():
                         "file_name": file.replace('.md', '')  # 해당 문제 파일 이름
                     })
 
-    # README.md 내용에 백준 문제 목록 추가
+    print("README 내용 추가 시작")
     content += "\n## 📚 백준 문제 풀이 목록\n"
 
-    # 백준 문제 난이도별 목록 추가
     for level in BAEKJOON_LEVELS:
         if baekjoon_problems[level]:
             content += f"### 📚 백준 {level} 문제\n"
@@ -91,16 +86,13 @@ def main():
             content += "| 문제번호 | 해설 | 언어 | 링크 |\n"
             content += "| ----- | ----- | ---- | ----- |\n"
             for problem in baekjoon_problems[level]:
-                # 문제에 해당하는 언어와 파일 확장자에 맞춰 링크 수정
                 file_extension = get_file_extension(problem['language'])
                 language_link = f"[{problem['language']}](./{problem['file_name']}{file_extension})"
                 content += f"| {problem['problem']} | {problem['link']} | {language_link} | [링크](./{problem['file_name']}{file_extension}) |\n"
             content += "</details>\n\n"  # 접기 끝
 
-    # 프로그래머스 문제 목록 추가
     content += "\n## 📚 프로그래머스 문제 풀이 목록\n"
 
-    # 프로그래머스 문제 난이도별 목록 추가
     for level in PROGRAMMERS_LEVELS:
         if programmers_problems[level]:
             content += f"### 📚 프로그래머스 {level} 문제\n"
@@ -108,17 +100,16 @@ def main():
             content += "| 문제번호 | 해설 | 언어 | 링크 |\n"
             content += "| ----- | ----- | ---- | ----- |\n"
             for problem in programmers_problems[level]:
-                # 문제에 해당하는 언어와 파일 확장자에 맞춰 링크 수정
                 file_extension = get_file_extension(problem['language'])
                 language_link = f"[{problem['language']}](./{problem['file_name']}{file_extension})"
                 content += f"| {problem['problem']} | {problem['link']} | {language_link} | [링크](./{problem['file_name']}{file_extension}) |\n"
             content += "</details>\n\n"  # 접기 끝
 
-    # 최종적으로 생성된 내용으로 README.md 파일을 덮어쓰기
+    print(f"최종 내용으로 {EXISTING_CONTENT_PATH} 파일을 덮어씁니다.")
     with open(EXISTING_CONTENT_PATH, "w", encoding="utf-8") as fd:
         fd.write(content)
+    print(f"수정 완료: {EXISTING_CONTENT_PATH}")
 
-# 프로그래머스 문제의 단계별 분류를 결정하는 함수
 def determine_programmers_level(file_name):
     if "0단계" in file_name:
         return "0단계"
@@ -132,7 +123,6 @@ def determine_programmers_level(file_name):
         return "4단계"
     return None
 
-# 백준 문제의 난이도별 분류를 결정하는 함수
 def determine_baekjoon_level(file_name):
     if "Bronze" in file_name:
         return "Bronze"
@@ -142,7 +132,6 @@ def determine_baekjoon_level(file_name):
         return "Gold"
     return None
 
-# 파일 확장자에 따른 언어 결정
 def determine_language(file_name):
     if file_name.endswith(".py"):
         return "Python"
@@ -152,10 +141,8 @@ def determine_language(file_name):
         return "C++"
     elif file_name.endswith(".sql"):
         return "SQL"
-    # 다른 언어가 추가될 경우 여기에 조건 추가
     return "Unknown"
 
-# 파일 확장자 구하기
 def get_file_extension(language):
     if language == "Python":
         return ".py"
