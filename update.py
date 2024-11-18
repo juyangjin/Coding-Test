@@ -1,7 +1,7 @@
 import os
 
 HEADER = """#
-# 백준, 프로그래머스 문제 풀이 목록
+
 """
 
 EXISTING_CONTENT_PATH = "README.md"  # 기존 README 파일
