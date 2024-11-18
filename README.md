@@ -5,11 +5,6 @@
 ## 📚 Gold
 ## 📚 Silver
 ## 📚 프로그래머스
-## 📚 0
-## 📚 1
-## 📚 2
-## 📚 3
-## 📚 4
 | 문제번호 | 해설 | 언어 | 링크 |
 | ----- | ----- | ---- | ----- |
 | 1000. A＋B | [해설](./%EB%B0%B1%EC%A4%80/Bronze/1000.%E2%80%85A%EF%BC%8BB/README.md) | [md](./%EB%B0%B1%EC%A4%80/Bronze/1000.%E2%80%85A%EF%BC%8BB/README.md) | [Java](./%EB%B0%B1%EC%A4%80/Bronze/1000.%E2%80%85A%EF%BC%8BB/A%EF%BC%8BB.java) |
