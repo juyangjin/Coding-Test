@@ -13,6 +13,14 @@ PROGRAMMERS_LEVELS = ["0단계", "1단계", "2단계", "3단계", "4단계"]
 BAEKJOON_LEVELS = ["Bronze", "Silver", "Gold"]
 
 def main():
+    print("Starting to update README.md...")
+    
+    # README.md가 없으면 새로 생성
+    if not os.path.exists(EXISTING_CONTENT_PATH):
+        print(f"{EXISTING_CONTENT_PATH} does not exist, creating a new one.")
+        with open(EXISTING_CONTENT_PATH, "w", encoding="utf-8") as f:
+            f.write("")  # 빈 파일 생성
+
     # 새로 생성될 내용
     content = HEADER
 
@@ -22,6 +30,7 @@ def main():
 
     directories = []
 
+    # 파일을 순차적으로 읽으며 문제 목록을 분류
     for root, dirs, files in os.walk("."):
         dirs.sort()
         if root == '.':
@@ -98,8 +107,11 @@ def main():
             content += "\n"
 
     # 최종적으로 생성된 내용으로 README.md 파일을 덮어쓰기
+    print("Updating README.md...")
     with open(EXISTING_CONTENT_PATH, "w", encoding="utf-8") as fd:
         fd.write(content)
+    
+    print("README.md has been updated!")
 
 def determine_programmers_level(file_name):
     """프로그래머스 문제의 단계별 분류를 결정하는 함수"""
