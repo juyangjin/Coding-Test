@@ -29,8 +29,8 @@ jobs:
             pip install requests pandas  # 필요한 패키지 예시
           fi
 
-      - name: Generate README
-        run: update.py
+      - name: README
+        run: python update.py
 
       - name: Commit changes
         run: |
