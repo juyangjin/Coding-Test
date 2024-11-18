@@ -24,6 +24,19 @@ LANGUAGE_MAP = {
     ".rs": "Rust",
 }
 
+# 난이도/단계별 정렬 우선순위 (내림차순 정렬을 위해 높은 숫자가 쉬운 단계)
+LEVEL_PRIORITY = {
+    "0": 6,  # 프로그래머스 레벨 0
+    "1": 5,  # 프로그래머스 레벨 1
+    "2": 4,  # 프로그래머스 레벨 2
+    "3": 3,  # 프로그래머스 레벨 3
+    "4": 2,  # 프로그래머스 레벨 4
+    "5": 1,  # 프로그래머스 레벨 5
+    "Bronze": 3,  # 백준 브론즈
+    "Silver": 2,  # 백준 실버
+    "Gold": 1,  # 백준 골드
+}
+
 def generate_readme():
     content = HEADER
 
@@ -42,7 +55,7 @@ def generate_readme():
         if parent_dir not in problems:
             continue
 
-        # 단계별 디렉토리 이름
+        # 단계별 디렉토리 이름 (예: Gold, Silver, 1, 0 등)
         stage = os.path.basename(root)
 
         if stage not in problems[parent_dir]:
@@ -53,8 +66,8 @@ def generate_readme():
             file_path = os.path.join(root, file)
             file_link = f"[{os.path.basename(file)}]({quote(file_path)})"
 
-            # 문제 번호 (파일 이름에서 추출)
-            problem_number = stage
+            # 문제 번호는 현재 디렉토리 이름
+            problem_number = os.path.basename(os.path.dirname(root))
 
             # 문제 데이터 초기화
             if problem_number not in problems[parent_dir][stage]:
@@ -73,7 +86,18 @@ def generate_readme():
     # README.md 생성
     for category, stages in problems.items():
         content += f"## 📚 {category}\n"
-        for stage, problems in stages.items():
+
+        # 단계별 정렬: LEVEL_PRIORITY 값으로 내림차순 정렬
+        sorted_stages = sorted(
+            stages.items(),
+            key=lambda x: LEVEL_PRIORITY.get(x[0], 100),  # 값이 없으면 마지막에 배치
+            reverse=True  # 내림차순 정렬
+        )
+
+        for stage, problems in sorted_stages:
+            if not problems:  # 저장된 문제가 없는 단계는 제외
+                continue
+
             content += f"### 🚀 {stage}\n"
             content += "| 문제번호 | 해설 | 언어 |\n"
             content += "| -------- | ---- | ---- |\n"
@@ -91,6 +115,7 @@ def generate_readme():
     with open("README.md", "w") as fd:
         fd.write(content)
     print("README.md has been updated successfully.")
+
 
 if __name__ == "__main__":
     generate_readme()
