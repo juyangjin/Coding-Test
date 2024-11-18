@@ -24,21 +24,23 @@ LANGUAGE_MAP = {
     ".rs": "Rust",
 }
 
-# 난이도/단계별 정렬 우선순위 (내림차순 정렬을 위해 높은 숫자가 쉬운 단계)
+# 난이도/단계별 정렬 우선순위
 LEVEL_PRIORITY = {
-    "0": 6,  # 프로그래머스 레벨 0
-    "1": 5,  # 프로그래머스 레벨 1
-    "2": 4,  # 프로그래머스 레벨 2
-    "3": 3,  # 프로그래머스 레벨 3
-    "4": 2,  # 프로그래머스 레벨 4
-    "5": 1,  # 프로그래머스 레벨 5
-    "Bronze": 3,  # 백준 브론즈
-    "Silver": 2,  # 백준 실버
-    "Gold": 1,  # 백준 골드
+    "0": 6,
+    "1": 5,
+    "2": 4,
+    "3": 3,
+    "4": 2,
+    "5": 1,
+    "Bronze": 3,
+    "Silver": 2,
+    "Gold": 1,
 }
+
 
 def generate_readme():
     content = HEADER
+    repo_name = "Coding-Test"  # 여기에 실제 레포지토리 이름을 설정
 
     # 문제 풀이를 저장할 딕셔너리
     problems = {
@@ -55,7 +57,7 @@ def generate_readme():
         if parent_dir not in problems:
             continue
 
-        # 단계별 디렉토리 이름 (예: Gold, Silver, 1, 0 등)
+        # 단계별 디렉토리 이름 (예: 0, 1, Gold, Silver 등)
         stage = os.path.basename(root)
 
         if stage not in problems[parent_dir]:
@@ -64,7 +66,9 @@ def generate_readme():
         # 파일 탐색
         for file in files:
             file_path = os.path.join(root, file)
-            file_link = f"[{os.path.basename(file)}]({quote(file_path)})"
+            # 파일 경로를 레포지토리명을 포함한 URL 형식으로 변경
+            relative_path = os.path.relpath(file_path, start=".")  # 현재 디렉토리 기준 상대 경로
+            file_link = f"[{os.path.basename(file)}]({repo_name}/{quote(relative_path)})"
 
             # 문제 번호는 현재 디렉토리 이름
             problem_number = os.path.basename(os.path.dirname(root))
@@ -90,8 +94,8 @@ def generate_readme():
         # 단계별 정렬: LEVEL_PRIORITY 값으로 내림차순 정렬
         sorted_stages = sorted(
             stages.items(),
-            key=lambda x: LEVEL_PRIORITY.get(x[0], 100),  # 값이 없으면 마지막에 배치
-            reverse=True  # 내림차순 정렬
+            key=lambda x: LEVEL_PRIORITY.get(x[0], 100),
+            reverse=True
         )
 
         for stage, problems in sorted_stages:
