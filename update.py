@@ -1,6 +1,7 @@
 import os
 import subprocess
 from urllib.parse import quote
+import hashlib
 
 HEADER = """#
 # 백준, 프로그래머스 문제 풀이 목록
@@ -34,6 +35,15 @@ LEVEL_PRIORITY = {
     "Silver": 2,
     "Gold": 1,
 }
+
+
+def calculate_file_hash(file_path):
+    """Calculate the SHA256 hash of a file."""
+    if not os.path.exists(file_path):
+        return None
+    with open(file_path, "rb") as f:
+        file_hash = hashlib.sha256(f.read()).hexdigest()
+    return file_hash
 
 
 def generate_readme():
@@ -102,18 +112,26 @@ def generate_readme():
 
                 content += f"| {problem_number} | {solution_link} | {language_links} |\n"
 
-    with open("README.md", "w") as fd:
+    readme_path = "README.md"
+    previous_hash = calculate_file_hash(readme_path)
+
+    with open(readme_path, "w") as fd:
         fd.write(content)
+
+    current_hash = calculate_file_hash(readme_path)
+
+    if previous_hash == current_hash:
+        print("No changes detected in README.md. Skipping commit and push.")
+        return False
+
     print("README.md has been updated successfully.")
+    return True
 
 
 def commit_and_push():
     try:
-        # Git 스테이징
         subprocess.run(["git", "add", "README.md"], check=True)
-        # Git 커밋
         subprocess.run(["git", "commit", "-m", "Update README.md"], check=True)
-        # Git 푸시
         subprocess.run(["git", "push"], check=True)
         print("Changes have been pushed to GitHub successfully.")
     except subprocess.CalledProcessError as e:
@@ -121,5 +139,5 @@ def commit_and_push():
 
 
 if __name__ == "__main__":
-    generate_readme()
-    commit_and_push()
+    if generate_readme():
+        commit_and_push()
