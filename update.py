@@ -13,12 +13,12 @@ BAEKJOON_LEVELS = ["Bronze", "Silver", "Gold"]
 
 # 기존 README.md 파일을 읽고, 새로운 문제 목록을 추가하는 함수
 def main():
-    # 기존 README 파일을 읽어 내용 유지
+    # 기존 README.md 파일이 없다면 새로 생성
     if os.path.exists(EXISTING_CONTENT_PATH):
         with open(EXISTING_CONTENT_PATH, "r", encoding="utf-8") as f:
             existing_content = f.read()
     else:
-        existing_content = ""  # 파일이 없다면 빈 문자열로 초기화
+        existing_content = "# 백준, 프로그래머스 문제 풀이 목록\n\n"  # 파일이 없다면 새로 작성할 기본 내용
 
     # 기존 내용을 그대로 가져오고 새로운 문제 목록을 추가할 준비
     content = existing_content  # 기존 내용을 그대로 가져옵니다.
@@ -29,7 +29,6 @@ def main():
     baekjoon_problems = {level: [] for level in BAEKJOON_LEVELS}
 
     # 문제 파일을 순회하여 적절한 목록에 추가
-    directories = []
     for root, dirs, files in os.walk("."):
         dirs.sort()
         if root == '.':
@@ -83,12 +82,13 @@ def main():
     for level in BAEKJOON_LEVELS:
         if baekjoon_problems[level]:
             content += f"### 📚 백준 {level} 문제\n"
+            content += f"<details>\n<summary>Click to expand</summary>\n"  # 접기 시작
             content += "| 문제번호 | 해설 | 언어 | 링크 |\n"
             content += "| ----- | ----- | ---- | ----- |\n"
             for problem in baekjoon_problems[level]:
                 file_extension = get_file_extension(problem['language'])
                 content += f"| {problem['problem']} | {problem['link']} | {problem['language']} | [링크](./{problem['problem']}{file_extension}) |\n"
-            content += "\n"
+            content += "</details>\n\n"  # 접기 끝
 
     # 프로그래머스 문제 목록 추가
     content += "\n## 📚 프로그래머스 문제 풀이 목록\n"
@@ -97,12 +97,13 @@ def main():
     for level in PROGRAMMERS_LEVELS:
         if programmers_problems[level]:
             content += f"### 📚 프로그래머스 {level} 문제\n"
+            content += f"<details>\n<summary>Click to expand</summary>\n"  # 접기 시작
             content += "| 문제번호 | 해설 | 언어 | 링크 |\n"
             content += "| ----- | ----- | ---- | ----- |\n"
             for problem in programmers_problems[level]:
                 file_extension = get_file_extension(problem['language'])
                 content += f"| {problem['problem']} | {problem['link']} | {problem['language']} | [링크](./{problem['problem']}{file_extension}) |\n"
-            content += "\n"
+            content += "</details>\n\n"  # 접기 끝
 
     # 최종적으로 생성된 내용으로 README.md 파일을 덮어쓰기
     with open(EXISTING_CONTENT_PATH, "w", encoding="utf-8") as fd:
