@@ -35,11 +35,13 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip || echo "Failed to upgrade pip"
+
         if [ -f "requirements.txt" ]; then
           pip install -r requirements.txt || echo "Failed to install dependencies"
         else
           echo "requirements.txt not found, installing default dependencies"
-          pip install requests pandas  # 필요한 패키지 예시
+          pip install requests pandas || echo "Failed to install default dependencies"
+        fi
 
     - name: Run update.py script
       run: python update.py  # update.py 파일 실행
