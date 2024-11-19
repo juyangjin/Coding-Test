@@ -1,9 +1,6 @@
 name: Auto Update README
 
 on:
-  push:
-    branches:
-      - main
   schedule:
     - cron: '0 0 * * *' # 매일 자정 실행
 
@@ -14,31 +11,32 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.10  # 최신 안정 버전
+          python-version: 3.10
 
       - name: Install dependencies
         run: |
           if [ -f "requirements.txt" ]; then
             pip install -r requirements.txt
           else
-            echo "requirements.txt not found, installing default dependencies"
-            pip install requests pandas  # 필요한 패키지 예시
-          fi
-
-      - name: README
+            echo "No requirements.txt found. Skipping dependencies."
+      
+      - name: Run update.py
         run: python update.py
 
-      - name: Commit changes
+      - name: Commit and push changes
         run: |
           git config --global user.name "github nickname"
           git config --global user.email "github email"
+          git diff
           if ! git diff --quiet; then
-            git add -A
+            git add README.md
             git commit -m "auto update README.md"
             git push
           else
-            echo "No changes to commit"
+            echo "No changes to commit."
