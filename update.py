@@ -71,7 +71,7 @@ def extract_difficulty(directory_name, category):
                 return str(level)
     # 난이도를 찾을 수 없을 경우 빈 문자열을 반환하도록 수정
     return ""
-    
+
 def generate_readme():
     """
     디렉토리 및 파일을 탐색하여 README.md를 생성합니다.
@@ -95,13 +95,17 @@ def generate_readme():
         # 난이도 추출
         difficulty = extract_difficulty(problem_dir, category)
 
+        # 'Unknown' 난이도는 무시
+        if not difficulty:
+            continue
+
         # 문제 파일 탐색
         language_links = []
         for file in files:
             if file == "README.md":  # README.md는 문제 이름에만 사용
                 continue
             file_path = os.path.join(root, file)
-            relative_path = os.path.relpath(file_path, start=".")
+            relative_path = os.path.relpath(file_path, start=".") 
             file_ext = os.path.splitext(file)[-1].lower()
             language = LANGUAGE_MAP.get(file_ext, "기타")
             language_links.append(f"[{language}]({quote(relative_path)})")
