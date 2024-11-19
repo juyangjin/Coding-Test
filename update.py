@@ -1,16 +1,6 @@
-#!/usr/bin/env python
-
 import os
-import subprocess
-import hashlib
-import urllib.parse
+from urllib.parse import quote
 
-# URL 인코딩을 위한 quote 함수 정의
-def quote(url):
-    """URL 인코딩을 수행하는 함수"""
-    return urllib.parse.quote(url, safe="/")
-
-# README 헤더 템플릿
 HEADER = """#
 # 백준, 프로그래머스 문제 풀이 목록
 이 저장소는 백준과 프로그래머스 문제 풀이를 정리한 저장소입니다.
@@ -32,12 +22,8 @@ LANGUAGE_MAP = {
     ".c": "C",
     ".m": "Objective-C",
     ".r": "R",
-    ".sql": "SQL",
+    ".sql" : "SQL",
 }
-
-BOJ_DIFFICULTY_ORDER = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ruby"]
-PROGRAMMERS_DIFFICULTY_ORDER = ["0", "1", "2", "3", "4", "5"]
-
 
 def calculate_file_hash(file_path):
     """파일의 SHA256 해시값을 계산하여 반환합니다."""
@@ -46,7 +32,6 @@ def calculate_file_hash(file_path):
     with open(file_path, "rb") as f:
         file_hash = hashlib.sha256(f.read()).hexdigest()
     return file_hash
-
 
 def split_problem_name(problem_name):
     """
@@ -63,15 +48,17 @@ def split_problem_name(problem_name):
         number, name = problem_name, ""
     return number, name
 
-
 def generate_readme():
     """
     디렉토리 및 파일을 탐색하여 README.md를 생성합니다.
     """
     content = HEADER
+    directories = []  # 섹션별 디렉토리 목록 저장
+    solved_problems = []  # 이미 처리된 문제 목록
+
     problems_by_category = {
-        "백준": {difficulty: [] for difficulty in BOJ_DIFFICULTY_ORDER},
-        "프로그래머스": {level: [] for level in PROGRAMMERS_DIFFICULTY_ORDER},
+        "백준": {"Bronze": [], "Silver": [], "Gold": [], "Platinum": [], "Ruby": []},
+        "프로그래머스": {"0": [], "1": [], "2": [], "3": [], "4": []},
     }
 
     for root, dirs, files in os.walk("."):
@@ -87,16 +74,41 @@ def generate_readme():
         problem_dir = os.path.basename(root)  # 현재 디렉토리 이름
         problem_number, problem_name = split_problem_name(problem_dir)  # 문제 번호와 문제 이름 분리
 
+        # 난이도 추출 (여기서는 문제 번호에 기반하여 난이도 설정)
         if category == "백준":
-            difficulty = os.path.basename(root)  # 난이도는 디렉토리 이름
-            if difficulty in BOJ_DIFFICULTY_ORDER:
-                problems_by_category["백준"][difficulty].append((problem_number, problem_name, files))
+            if "Bronze" in problem_dir:
+                difficulty = "Bronze"
+            elif "Silver" in problem_dir:
+                difficulty = "Silver"
+            elif "Gold" in problem_dir:
+                difficulty = "Gold"
+            elif "Platinum" in problem_dir:
+                difficulty = "Platinum"
+            else:
+                difficulty = "Ruby"
         elif category == "프로그래머스":
-            level = os.path.basename(root)  # 난이도는 디렉토리 이름
-            if level in PROGRAMMERS_DIFFICULTY_ORDER:
-                problems_by_category["프로그래머스"][level].append((problem_number, problem_name, files))
+            difficulty = problem_dir.split()[0]  # '0', '1', '2', 등으로 구분
 
-    # 카테고리별 섹션 작성
+        # 문제 파일 탐색
+        language_links = []
+        for file in files:
+            if file == "README.md":  # README.md는 문제 이름에만 사용
+                continue
+            file_path = os.path.join(root, file)
+            relative_path = os.path.relpath(file_path, start=".")
+            file_ext = os.path.splitext(file)[-1].lower()
+            language = LANGUAGE_MAP.get(file_ext, "기타")
+            language_links.append(f"[{language}]({quote(relative_path)})")
+
+        if language_links:
+            # 언어 링크를 알파벳순으로 정렬하고 슬래시로 구분
+            language_links.sort()
+            language_text = " / ".join(language_links)
+
+            # 문제 정보를 해당 난이도에 추가
+            problems_by_category[category][difficulty].append((problem_number, problem_name, language_text))
+
+    # 각 카테고리, 난이도에 맞는 표 생성
     for category, difficulties in problems_by_category.items():
         content += f"## 📚 {category}\n"
         for difficulty, problems in difficulties.items():
@@ -104,56 +116,15 @@ def generate_readme():
                 content += f"### 🚀 {difficulty}\n"
                 content += "| 문제번호 | 문제 이름 | 언어 |\n"
                 content += "| -------- | --------- | ----- |\n"
-
-                for problem_number, problem_name, files in problems:
-                    language_links = []
-                    for file in files:
-                        if file == "README.md":
-                            continue
-                        file_path = os.path.join(root, file)
-                        relative_path = os.path.relpath(file_path, start=".")
-                        file_ext = os.path.splitext(file)[-1].lower()
-                        language = LANGUAGE_MAP.get(file_ext, "기타")
-                        language_links.append(f"[{language}]({quote(relative_path)})")
-
-                    if language_links:
-                        language_links.sort()
-                        language_text = " / ".join(language_links)
-                        content += f"| {problem_number} | {problem_name} | {language_text} |\n"
+                for problem_number, problem_name, language_text in problems:
+                    content += f"| {problem_number} | {problem_name} | {language_text} |\n"
 
     # README 파일 작성
-    readme_path = "README.md"
-    previous_hash = calculate_file_hash(readme_path)
-    if not os.path.exists(readme_path):
-        print(f"{readme_path} not found. Creating new README file...")
-    with open(readme_path, "w") as f:
+    with open("README.md", "w") as f:
         f.write(content)
 
-    current_hash = calculate_file_hash(readme_path)
-    if previous_hash == current_hash:
-        print("No changes detected in README.md. Skipping commit and push.")
-        return False
     print("README.md has been updated successfully.")
     return True
 
-
-def commit_and_push():
-    """변경된 README.md 파일을 Git에 커밋하고 원격 저장소에 푸시합니다."""
-    try:
-        print("Adding README.md to Git...")
-        subprocess.run(["git", "add", "README.md"], check=True)
-        print("Committing changes...")
-        subprocess.run(["git", "commit", "-m", "Update README.md"], check=True)
-        print("Pushing to remote repository...")
-        subprocess.run(["git", "push"], check=True)
-        print("Changes have been pushed to GitHub successfully.")
-    except subprocess.CalledProcessError as e:
-        print(f"An error occurred during Git operation: {e}")
-        print("Check Git setup or permissions and retry.")
-
-
 if __name__ == "__main__":
-    if generate_readme():
-        commit_and_push()
-    else:
-        print("No updates were made to README.md.")
+    generate_readme()
