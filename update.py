@@ -1,15 +1,14 @@
+#!/usr/bin/env python
 import os
 import subprocess
 from urllib.parse import quote
 import hashlib
 
-# README 헤더 템플릿
 HEADER = """#
 # 백준, 프로그래머스 문제 풀이 목록
 이 저장소는 백준과 프로그래머스 문제 풀이를 정리한 저장소입니다.
 """
 
-# 확장자별 언어 매핑
 LANGUAGE_MAP = {
     ".py": "Python",
     ".java": "Java",
@@ -27,123 +26,63 @@ LANGUAGE_MAP = {
     ".rs": "Rust",
 }
 
-# 문제 난이도에 따른 정렬 우선순위
-LEVEL_PRIORITY = {
-    "0": 6,
-    "1": 5,
-    "2": 4,
-    "3": 3,
-    "4": 2,
-    "5": 1,
-    "Bronze": 3,
-    "Silver": 2,
-    "Gold": 1,
-}
-
 def calculate_file_hash(file_path):
-    """
-    파일의 SHA256 해시값을 계산하여 반환합니다.
-    """
     if not os.path.exists(file_path):
         return None
     with open(file_path, "rb") as f:
-        file_hash = hashlib.sha256(f.read()).hexdigest()
-    return file_hash
+        return hashlib.sha256(f.read()).hexdigest()
 
 def generate_readme():
-    """
-    프로젝트 디렉토리 구조를 읽고 README.md 파일을 생성합니다.
-    """
-    print("Starting README generation...")  # 디버깅 메시지
+    print("Generating README...")
     content = HEADER
-    repo_name = "Coding-Test"
+    problems = {}
 
-    problems = {
-        "백준": {},
-        "프로그래머스": {},
-    }
-
-    # 최상위 디렉토리에서 백준과 프로그래머스 폴더를 처리하도록 수정
     for root, dirs, files in os.walk("."):
-        # 최상위 디렉토리만 처리, 하위 디렉토리부터 처리
-        if os.path.basename(root) not in ["백준", "프로그래머스"]:
+        parent_dir = os.path.basename(os.path.dirname(root))
+        if parent_dir not in ["백준", "프로그래머스"]:
             continue
-
-        parent_dir = os.path.basename(root)  # "백준" 또는 "프로그래머스"
-        print(f"Processing directory: {root}, Parent dir: {parent_dir}")  # 디버깅: 현재 디렉토리
-
+        
+        problem_number = os.path.basename(root)
         for file in files:
+            file_ext = os.path.splitext(file)[-1].lower()
+            language = LANGUAGE_MAP.get(file_ext, "기타")
             file_path = os.path.join(root, file)
-            relative_path = os.path.relpath(file_path, start=".")
-            file_link = f"[{os.path.basename(file)}]({repo_name}/{quote(relative_path)})"
-            print(f"File: {file}, Link: {file_link}")  # 디버깅: 파일 이름과 링크
+            file_link = f"[{os.path.basename(file)}](/{quote(file_path)})"
+            
+            if problem_number not in problems:
+                problems[problem_number] = {"languages": {}, "solution": None}
+            
+            if file.endswith(".md"):
+                problems[problem_number]["solution"] = file_link
+            else:
+                problems[problem_number]["languages"][language] = file_link
 
-            problem_number = os.path.basename(root)  # 문제 번호는 폴더명으로
+    for problem, data in problems.items():
+        solution = data["solution"] or "없음"
+        languages = " / ".join(f"{lang}: {link}" for lang, link in data["languages"].items())
+        content += f"| {problem} | {solution} | {languages} |\n"
 
-            # 문제 번호에 해당하는 데이터 구조 초기화
-            if problem_number not in problems[parent_dir]:
-                problems[parent_dir][problem_number] = {"languages": {}, "solution": None}
-
-            if file.endswith(".md"):  # 해설 파일이면
-                problems[parent_dir][problem_number]["solution"] = file_link
-            else:  # 언어별 파일 처리
-                file_ext = os.path.splitext(file)[-1]
-                language = LANGUAGE_MAP.get(file_ext, "기타")
-                problems[parent_dir][problem_number]["languages"][language] = file_link
-
-    # README 내용 작성
-    for category, problems_dict in problems.items():
-        content += f"## 📚 {category}\n"
-
-        for problem_number, data in problems_dict.items():
-            solution_link = data["solution"] if data["solution"] else "없음"
-            language_links = " / ".join(
-                f"[{lang}]({link})" for lang, link in data["languages"].items()
-            )
-            if not language_links:
-                language_links = "없음"
-
-            content += f"| {problem_number} | {solution_link} | {language_links} |\n"
-
-    # README.md가 없으면 새로 만들기
     readme_path = "README.md"
     previous_hash = calculate_file_hash(readme_path)
 
-    if not os.path.exists(readme_path):
-        print(f"{readme_path} not found. Creating new README file...")
-
-    with open(readme_path, "w") as fd:
-        fd.write(content)
+    with open(readme_path, "w") as f:
+        f.write(content)
 
     current_hash = calculate_file_hash(readme_path)
 
-    if previous_hash == current_hash:
-        print("No changes detected in README.md. Skipping commit and push.")
-        return False
-
-    print("README.md has been updated successfully.")
-    return True
+    return previous_hash != current_hash
 
 def commit_and_push():
-    """
-    변경된 README.md 파일을 Git에 커밋하고 원격 저장소에 푸시합니다.
-    """
     try:
-        print("Adding README.md to Git...")
         subprocess.run(["git", "add", "README.md"], check=True)
-        
-        print("Committing changes...")
         subprocess.run(["git", "commit", "-m", "Update README.md"], check=True)
-        
-        print("Pushing to remote repository...")
         subprocess.run(["git", "push"], check=True)
-        print("Changes have been pushed to GitHub successfully.")
+        print("Changes pushed successfully.")
     except subprocess.CalledProcessError as e:
-        print(f"An error occurred during Git operation: {e}")
-        print("Check Git setup or permissions and retry.")
+        print(f"Git error: {e}")
 
 if __name__ == "__main__":
     if generate_readme():
         commit_and_push()
     else:
-        print("No updates were made to README.md.")
+        print("No changes detected.")
