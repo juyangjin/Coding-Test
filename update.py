@@ -2,6 +2,7 @@ import os
 import subprocess
 from urllib.parse import quote
 import hashlib
+from collections import defaultdict
 
 # README 헤더 템플릿
 HEADER = """#
@@ -25,8 +26,10 @@ LANGUAGE_MAP = {
     ".c": "C",
     ".m": "Objective-C",
     ".r": "R",
-    ".sql" : "SQL",
 }
+
+# 난이도 정렬 우선순위 (백준)
+BOJ_DIFFICULTY_ORDER = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ruby"]
 
 def calculate_file_hash(file_path):
     """파일의 SHA256 해시값을 계산하여 반환합니다."""
@@ -51,13 +54,29 @@ def split_problem_name(problem_name):
         number, name = problem_name, ""
     return number, name
 
+def extract_difficulty(directory_name, category):
+    """
+    디렉토리 이름에서 난이도를 추출합니다.
+    :param directory_name: 디렉토리 이름
+    :param category: 백준 또는 프로그래머스
+    :return: 난이도 문자열
+    """
+    if category == "백준":
+        for difficulty in BOJ_DIFFICULTY_ORDER:
+            if difficulty.lower() in directory_name.lower():
+                return difficulty
+    elif category == "프로그래머스":
+        for level in range(10):  # 난이도 0부터 9까지
+            if f"level{level}" in directory_name.lower():
+                return str(level)
+    return "Unknown"
+
 def generate_readme():
     """
     디렉토리 및 파일을 탐색하여 README.md를 생성합니다.
     """
     content = HEADER
-    directories = []  # 섹션별 디렉토리 목록 저장
-    solved_problems = []  # 이미 처리된 문제 목록
+    problems_by_difficulty = defaultdict(list)  # 난이도별 문제 저장
 
     for root, dirs, files in os.walk("."):
         dirs.sort()  # 디렉토리 정렬
@@ -72,18 +91,13 @@ def generate_readme():
         problem_dir = os.path.basename(root)  # 현재 디렉토리 이름
         problem_number, problem_name = split_problem_name(problem_dir)  # 문제 번호와 문제 이름 분리
 
-        # README 섹션 작성
-        if category not in directories:
-            if category in ["백준", "프로그래머스"]:
-                content += f"## 📚 {category}\n| 문제번호 | 문제 이름 | 언어 |\n| ------ | --------- | ----- |\n"
-                directories.append(category)
+        # 난이도 추출
+        difficulty = extract_difficulty(problem_dir, category)
 
         # 문제 파일 탐색
         language_links = []
         for file in files:
             if file == "README.md":  # README.md는 문제 이름에만 사용
-                continue
-            if problem_dir in solved_problems:
                 continue
             file_path = os.path.join(root, file)
             relative_path = os.path.relpath(file_path, start=".")
@@ -103,9 +117,15 @@ def generate_readme():
             else:
                 problem_number_link = problem_number
 
-            # 문제 정보 추가
-            content += f"| {problem_number_link} | {problem_name} | {language_text} |\n"
-            solved_problems.append(problem_dir)
+            # 문제 정보 저장
+            problems_by_difficulty[(category, difficulty)].append(
+                f"| {problem_number_link} | {problem_name} | {language_text} |\n"
+            )
+
+    # README 작성
+    for (category, difficulty), problems in sorted(problems_by_difficulty.items(), key=lambda x: (x[0][0], BOJ_DIFFICULTY_ORDER.index(x[0][1]) if x[0][0] == "백준" else int(x[0][1]))):
+        content += f"## 📚 {category} - {difficulty}\n| 문제번호 | 문제 이름 | 언어 |\n| ------ | --------- | ----- |\n"
+        content += "".join(problems)
 
     # README 파일 작성
     readme_path = "README.md"
