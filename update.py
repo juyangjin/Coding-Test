@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import os
 import subprocess
 from urllib.parse import quote
@@ -84,7 +82,7 @@ def generate_readme():
 
         # 문제 파일 탐색
         for file in files:
-            if file == "README.md":  # README.md는 제외
+            if file == "README.md":  # README.md는 문제 이름에만 사용
                 continue
 
             if problem_dir in solved_problems:
@@ -95,9 +93,16 @@ def generate_readme():
             file_ext = os.path.splitext(file)[-1].lower()
             language = LANGUAGE_MAP.get(file_ext, "기타")
 
+            # README.md 링크 생성
+            readme_path = os.path.join(root, "README.md")
+            if os.path.exists(readme_path):
+                problem_name_link = f"[{problem_name}]({quote(os.path.relpath(readme_path, start='.'))})"
+            else:
+                problem_name_link = problem_name
+
             # 문제 정보 추가
             language_with_link = f"[{language}]({quote(relative_path)})"
-            content += f"| {problem_number} | {problem_name} | {language_with_link} |\n"
+            content += f"| {problem_number} | {problem_name_link} | {language_with_link} |\n"
             solved_problems.append(problem_dir)
 
     # README 파일 작성
