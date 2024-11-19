@@ -102,7 +102,7 @@ def generate_readme():
         if category not in directories:
             if category in ["백준", "프로그래머스"]:
                 content += f"## 📚 {category}\n"
-                content += f"### 난이도: {difficulty}\n"  # 난이도를 섹션 아래에 추가
+                content += f"### {difficulty}\n"  # 난이도를 바로 추가
                 content += "| 문제번호 | 문제 이름 | 언어 |\n"
                 content += "| -------- | --------- | ----- |\n"
                 directories.append(category)
