@@ -39,9 +39,22 @@ def calculate_file_hash(file_path):
     return file_hash
 
 
+def split_problem_name(problem_name):
+    """
+    문제 번호와 문제 이름을 분리합니다.
+    :param problem_name: 디렉토리 이름
+    :return: 문제 번호 (왼쪽 숫자)와 문제 이름 (오른쪽 텍스트)
+    """
+    if ". " in problem_name:
+        number, name = problem_name.split(". ", 1)
+    else:
+        number, name = problem_name, problem_name
+    return number, name
+
+
 def generate_readme():
     """
-    기존 방식으로 디렉토리 및 파일을 탐색하면서, 언어 매핑 기능을 추가해 README.md를 생성합니다.
+    디렉토리 및 파일을 탐색하여 README.md를 생성합니다.
     """
     content = HEADER
     directories = []  # 섹션별 디렉토리 목록 저장
@@ -58,7 +71,8 @@ def generate_readme():
             continue
 
         category = os.path.basename(os.path.dirname(root))  # 상위 디렉토리 이름
-        problem_name = os.path.basename(root)  # 현재 디렉토리 이름
+        problem_dir = os.path.basename(root)  # 현재 디렉토리 이름
+        problem_number, problem_name = split_problem_name(problem_dir)  # 문제 번호와 문제 이름 분리
 
         # README 섹션 작성
         if category not in directories:
@@ -70,20 +84,21 @@ def generate_readme():
 
         # 문제 파일 탐색
         for file in files:
-            if problem_name in solved_problems:
+            if file == "README.md":  # README.md는 제외
+                continue
+
+            if problem_dir in solved_problems:
                 continue
 
             file_path = os.path.join(root, file)
             relative_path = os.path.relpath(file_path, start=".")
-            file_link = f"[{file}]({quote(relative_path)})"
-
-            # 파일 확장자로 언어 확인
             file_ext = os.path.splitext(file)[-1].lower()
             language = LANGUAGE_MAP.get(file_ext, "기타")
 
             # 문제 정보 추가
-            content += f"| {problem_name} | {problem_name} | {language}: {file_link} |\n"
-            solved_problems.append(problem_name)
+            language_with_link = f"[{language}]({quote(relative_path)})"
+            content += f"| {problem_number} | {problem_name} | {language_with_link} |\n"
+            solved_problems.append(problem_dir)
 
     # README 파일 작성
     readme_path = "README.md"
