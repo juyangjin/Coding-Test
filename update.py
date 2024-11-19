@@ -65,37 +65,38 @@ def generate_readme():
             continue
 
         # 상위 디렉토리 이름을 카테고리로 사용 (백준, 프로그래머스)
-        category = os.path.basename(os.path.dirname(root))
+        category = os.path.basename(os.path.dirname(root)) if os.path.dirname(root) != "." else None
         problem_dir = os.path.basename(root)  # 문제 폴더 이름
         problem_number, problem_name = split_problem_name(problem_dir)  # 문제 번호와 문제 이름 분리
 
-        # 카테고리별로 문제들을 분류
-        if category not in categories:
-            categories[category] = {}
+        if category:
+            # 카테고리별로 문제들을 분류
+            if category not in categories:
+                categories[category] = {}
 
-        # 난이도별로 문제들을 분류
-        difficulty = os.path.basename(os.path.dirname(root))  # 난이도는 문제 폴더의 상위 폴더명
-        if difficulty not in categories[category]:
-            categories[category][difficulty] = []
+            # 난이도별로 문제들을 분류
+            difficulty = os.path.basename(os.path.dirname(root))  # 난이도는 문제 폴더의 상위 폴더명
+            if difficulty not in categories[category]:
+                categories[category][difficulty] = []
 
-        # 문제 파일 탐색
-        language_links = []
-        for file in files:
-            if file == "README.md":  # README.md는 문제 이름에만 사용
-                continue
-            file_path = os.path.join(root, file)
-            relative_path = os.path.relpath(file_path, start=".")
-            file_ext = os.path.splitext(file)[-1].lower()
-            language = LANGUAGE_MAP.get(file_ext, "기타")
-            language_links.append(f"[{language}]({quote(relative_path)})")
+            # 문제 파일 탐색
+            language_links = []
+            for file in files:
+                if file == "README.md":  # README.md는 문제 이름에만 사용
+                    continue
+                file_path = os.path.join(root, file)
+                relative_path = os.path.relpath(file_path, start=".")
+                file_ext = os.path.splitext(file)[-1].lower()
+                language = LANGUAGE_MAP.get(file_ext, "기타")
+                language_links.append(f"[{language}]({quote(relative_path)})")
 
-        if language_links:
-            # 언어 링크를 알파벳순으로 정렬하고 슬래시로 구분
-            language_links.sort()
-            language_text = " / ".join(language_links)
+            if language_links:
+                # 언어 링크를 알파벳순으로 정렬하고 슬래시로 구분
+                language_links.sort()
+                language_text = " / ".join(language_links)
 
-            # 문제 정보를 카테고리 및 난이도별로 저장
-            categories[category][difficulty].append((problem_number, problem_name, language_text))
+                # 문제 정보를 카테고리 및 난이도별로 저장
+                categories[category][difficulty].append((problem_number, problem_name, language_text))
 
     # README 내용 작성
     for category, difficulties in categories.items():
