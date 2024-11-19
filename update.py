@@ -123,7 +123,10 @@ def generate_readme():
             )
 
     # README 작성
-    for (category, difficulty), problems in sorted(problems_by_difficulty.items(), key=lambda x: (x[0][0], BOJ_DIFFICULTY_ORDER.index(x[0][1]) if x[0][0] == "백준" else int(x[0][1]))):
+    for (category, difficulty), problems in sorted(problems_by_difficulty.items(), key=lambda x: (
+        x[0][0], 
+        BOJ_DIFFICULTY_ORDER.index(x[0][1]) if x[0][0] == "백준" else int(x[0][1]))):
+        
         content += f"## 📚 {category} - {difficulty}\n| 문제번호 | 문제 이름 | 언어 |\n| ------ | --------- | ----- |\n"
         content += "".join(problems)
 
