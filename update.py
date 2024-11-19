@@ -22,7 +22,7 @@ LANGUAGE_MAP = {
     ".c": "C",
     ".m": "Objective-C",
     ".r": "R",
-    ".sql" : "SQL",
+    ".sql": "SQL",
 }
 
 def calculate_file_hash(file_path):
@@ -56,11 +56,6 @@ def generate_readme():
     directories = []  # 섹션별 디렉토리 목록 저장
     solved_problems = []  # 이미 처리된 문제 목록
 
-    problems_by_category = {
-        "백준": {"Bronze": [], "Silver": [], "Gold": [], "Platinum": [], "Ruby": []},
-        "프로그래머스": {"0": [], "1": [], "2": [], "3": [], "4": []},
-    }
-
     for root, dirs, files in os.walk("."):
         dirs.sort()  # 디렉토리 정렬
         if root == ".":
@@ -74,20 +69,14 @@ def generate_readme():
         problem_dir = os.path.basename(root)  # 현재 디렉토리 이름
         problem_number, problem_name = split_problem_name(problem_dir)  # 문제 번호와 문제 이름 분리
 
-        # 난이도 추출 (여기서는 문제 번호에 기반하여 난이도 설정)
-        if category == "백준":
-            if "Bronze" in problem_dir:
-                difficulty = "Bronze"
-            elif "Silver" in problem_dir:
-                difficulty = "Silver"
-            elif "Gold" in problem_dir:
-                difficulty = "Gold"
-            elif "Platinum" in problem_dir:
-                difficulty = "Platinum"
-            else:
-                difficulty = "Ruby"
-        elif category == "프로그래머스":
-            difficulty = problem_dir.split()[0]  # '0', '1', '2', 등으로 구분
+        # 난이도 추출 (폴더 이름을 그대로 난이도로 사용)
+        difficulty = problem_dir  # 폴더명이 난이도가 됨
+
+        # README 섹션 작성
+        if category not in directories:
+            if category in ["백준", "프로그래머스"]:
+                content += f"## 📚 {category}\n"
+                directories.append(category)
 
         # 문제 파일 탐색
         language_links = []
@@ -105,19 +94,12 @@ def generate_readme():
             language_links.sort()
             language_text = " / ".join(language_links)
 
-            # 문제 정보를 해당 난이도에 추가
-            problems_by_category[category][difficulty].append((problem_number, problem_name, language_text))
-
-    # 각 카테고리, 난이도에 맞는 표 생성
-    for category, difficulties in problems_by_category.items():
-        content += f"## 📚 {category}\n"
-        for difficulty, problems in difficulties.items():
-            if problems:
-                content += f"### 🚀 {difficulty}\n"
-                content += "| 문제번호 | 문제 이름 | 언어 |\n"
-                content += "| -------- | --------- | ----- |\n"
-                for problem_number, problem_name, language_text in problems:
-                    content += f"| {problem_number} | {problem_name} | {language_text} |\n"
+            # 문제 정보를 추가
+            content += f"### 🚀 {difficulty}\n"
+            content += "| 문제번호 | 문제 이름 | 언어 |\n"
+            content += "| -------- | --------- | ----- |\n"
+            content += f"| {problem_number} | {problem_name} | {language_text} |\n"
+            solved_problems.append(problem_dir)
 
     # README 파일 작성
     with open("README.md", "w") as f:
