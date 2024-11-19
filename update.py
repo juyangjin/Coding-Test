@@ -25,27 +25,13 @@ LANGUAGE_MAP = {
     ".c": "C",
     ".m": "Objective-C",
     ".r": "R",
-    ".sql": "SQL",
+    ".sql" : "SQL",
 }
 
-# 백준 난이도
-BOJ_DIFFICULTY = {
-    "Bronze": "브론즈",
-    "Silver": "실버",
-    "Gold": "골드",
-    "Platinum": "플래티넘",
-    "Ruby": "루비",
-}
-
+# 난이도 정렬 우선순위 (백준)
+BOJ_DIFFICULTY_ORDER = ["Bronze", "Silver", "Gold", "Platinum", "Ruby"]
 # 프로그래머스 난이도
-PROGRAMMERS_DIFFICULTY = {
-    "0": "level 0",
-    "1": "level 1",
-    "2": "level 2",
-    "3": "level 3",
-    "4": "level 4",
-    "5": "level 5",
-}
+PROGRAMMERS_DIFFICULTY_ORDER = ["0", "1", "2", "3", "4", "5"]
 
 def calculate_file_hash(file_path):
     """파일의 SHA256 해시값을 계산하여 반환합니다."""
@@ -70,17 +56,22 @@ def split_problem_name(problem_name):
         number, name = problem_name, ""
     return number, name
 
-def extract_difficulty(category, directory_name):
-    """디렉토리 이름에서 난이도를 추출하여 반환."""
+def extract_difficulty(directory_name, category):
+    """
+    디렉토리 이름에서 난이도를 추출합니다.
+    :param directory_name: 디렉토리 이름
+    :param category: 백준 또는 프로그래머스
+    :return: 난이도 문자열
+    """
     if category == "백준":
-        for difficulty in BOJ_DIFFICULTY.keys():
+        for difficulty in BOJ_DIFFICULTY_ORDER:
             if difficulty.lower() in directory_name.lower():
-                return BOJ_DIFFICULTY[difficulty]
+                return difficulty
     elif category == "프로그래머스":
-        for level in PROGRAMMERS_DIFFICULTY.keys():
+        for level in PROGRAMMERS_DIFFICULTY_ORDER:
             if f"level{level}" in directory_name.lower():
-                return PROGRAMMERS_DIFFICULTY[level]
-    return "난이도 없음"  # 난이도 정보가 없으면 '난이도 없음' 표시
+                return level
+    return "Unknown"
 
 def generate_readme():
     """
@@ -89,6 +80,7 @@ def generate_readme():
     content = HEADER
     directories = []  # 섹션별 디렉토리 목록 저장
     solved_problems = []  # 이미 처리된 문제 목록
+    problems_by_difficulty = {}  # 난이도별 문제를 저장할 딕셔너리
 
     for root, dirs, files in os.walk("."):
         dirs.sort()  # 디렉토리 정렬
@@ -103,10 +95,16 @@ def generate_readme():
         problem_dir = os.path.basename(root)  # 현재 디렉토리 이름
         problem_number, problem_name = split_problem_name(problem_dir)  # 문제 번호와 문제 이름 분리
 
+        # 난이도 추출
+        difficulty = extract_difficulty(problem_dir, category)
+
         # README 섹션 작성
         if category not in directories:
             if category in ["백준", "프로그래머스"]:
-                content += f"## 📚 {category}\n| 문제번호 | 문제 이름 | 난이도 | 언어 |\n| ------ | --------- | ----- | ----- |\n"
+                content += f"## 📚 {category}\n"
+                content += f"### 난이도: {difficulty}\n"  # 난이도를 섹션 아래에 추가
+                content += "| 문제번호 | 문제 이름 | 언어 |\n"
+                content += "| -------- | --------- | ----- |\n"
                 directories.append(category)
 
         # 문제 파일 탐색
@@ -114,16 +112,11 @@ def generate_readme():
         for file in files:
             if file == "README.md":  # README.md는 문제 이름에만 사용
                 continue
-            if problem_dir in solved_problems:
-                continue
             file_path = os.path.join(root, file)
             relative_path = os.path.relpath(file_path, start=".")
             file_ext = os.path.splitext(file)[-1].lower()
             language = LANGUAGE_MAP.get(file_ext, "기타")
             language_links.append(f"[{language}]({quote(relative_path)})")
-
-        # 난이도 추출
-        difficulty = extract_difficulty(category, problem_dir)
 
         if language_links:
             # 언어 링크를 알파벳순으로 정렬하고 슬래시로 구분
@@ -138,7 +131,7 @@ def generate_readme():
                 problem_number_link = problem_number
 
             # 문제 정보 추가
-            content += f"| {problem_number_link} | {problem_name} | {difficulty} | {language_text} |\n"
+            content += f"| {problem_number_link} | {problem_name} | {language_text} |\n"
             solved_problems.append(problem_dir)
 
     # README 파일 작성
