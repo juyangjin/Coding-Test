@@ -56,6 +56,9 @@ def generate_readme():
     directories = []  # 섹션별 디렉토리 목록 저장
     solved_problems = []  # 이미 처리된 문제 목록
 
+    # 난이도별로 문제를 저장할 딕셔너리
+    problems_by_category = {}
+
     for root, dirs, files in os.walk("."):
         dirs.sort()  # 디렉토리 정렬
         if root == ".":
@@ -70,12 +73,10 @@ def generate_readme():
         problem_dir = os.path.basename(root)  # 문제 폴더 이름
         problem_number, problem_name = split_problem_name(problem_dir)  # 문제 번호와 문제 이름 분리
 
-        # README 섹션 작성
-        if category not in directories:
-            if category in ["백준", "프로그래머스"]:
-                content += f"## 📚 {category}\n"
-                directories.append(category)
-
+        # 문제를 난이도별로 분류
+        if category not in problems_by_category:
+            problems_by_category[category] = []
+        
         # 문제 파일 탐색
         language_links = []
         for file in files:
@@ -93,11 +94,16 @@ def generate_readme():
             language_text = " / ".join(language_links)
 
             # 문제 정보를 추가
-            content += f"### 🚀 {category}\n"
-            content += "| 문제번호 | 문제 이름 | 언어 |\n"
-            content += "| -------- | --------- | ----- |\n"
+            problems_by_category[category].append((problem_number, problem_name, language_text))
+
+    # README 내용 작성
+    for category, problems in problems_by_category.items():
+        content += f"## 📚 {category}\n"
+        content += "| 문제번호 | 문제 이름 | 언어 |\n"
+        content += "| -------- | --------- | ----- |\n"
+        
+        for problem_number, problem_name, language_text in problems:
             content += f"| {problem_number} | {problem_name} | {language_text} |\n"
-            solved_problems.append(problem_dir)
 
     # README 파일 작성
     with open("README.md", "w") as f:
