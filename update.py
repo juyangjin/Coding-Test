@@ -108,7 +108,8 @@ def generate_readme():
             else:
                 icon = "⭐"  # 프로그래머스는 별 아이콘
 
-            content += f"### {icon} {difficulty}\n"  # 난이도별 아이콘 추가
+            # 난이도 아이콘을 난이도 이름 앞에 추가하고 제목 작성
+            content += f"### {icon} {difficulty}\n"
             content += "| 문제번호 | 문제 이름 | 언어 |\n"
             content += "| -------- | --------- | ----- |\n"
 
