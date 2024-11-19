@@ -85,10 +85,11 @@ def generate_readme():
                 if file == "README.md":  # README.md는 문제 이름에만 사용
                     continue
                 file_path = os.path.join(root, file)
-                relative_path = os.path.relpath(file_path, start=".")
+                relative_path = os.path.relpath(file_path, start=".")  # 상대 경로 계산
                 file_ext = os.path.splitext(file)[-1].lower()
                 language = LANGUAGE_MAP.get(file_ext, "기타")
-                language_links.append(f"[{language}]({quote(relative_path)})")
+                encoded_path = quote(relative_path)  # URL 인코딩
+                language_links.append(f"[{language}]({encoded_path})")
 
             if language_links:
                 # 언어 링크를 알파벳순으로 정렬하고 슬래시로 구분
