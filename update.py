@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import subprocess
 from urllib.parse import quote
 import hashlib
 
@@ -28,74 +29,68 @@ LANGUAGE_MAP = {
     ".rs": "Rust",
 }
 
+
 def calculate_file_hash(file_path):
-    """
-    파일의 SHA256 해시값을 계산하여 반환합니다.
-    """
+    """파일의 SHA256 해시값을 계산하여 반환합니다."""
     if not os.path.exists(file_path):
         return None
     with open(file_path, "rb") as f:
         file_hash = hashlib.sha256(f.read()).hexdigest()
     return file_hash
 
-def main():
-    """
-    README.md를 생성하고 GitHub에 업데이트하는 스크립트.
-    """
-    print("Generating README...")  # 디버깅용 메시지
-    content = HEADER
 
-    # 처리된 디렉토리 및 문제 저장
-    directories = []
-    solved_problems = {}
+def generate_readme():
+    """
+    기존 방식으로 디렉토리 및 파일을 탐색하면서, 언어 매핑 기능을 추가해 README.md를 생성합니다.
+    """
+    content = HEADER
+    directories = []  # 섹션별 디렉토리 목록 저장
+    solved_problems = []  # 이미 처리된 문제 목록
 
     for root, dirs, files in os.walk("."):
-        # 최상위 디렉토리 스킵 및 불필요한 폴더 제외
+        dirs.sort()  # 디렉토리 정렬
+
         if root == ".":
+            # 최상위 디렉토리에서 제외할 디렉토리
             for exclude in (".git", ".github"):
                 if exclude in dirs:
                     dirs.remove(exclude)
             continue
 
-        # 현재 디렉토리와 문제 이름 가져오기
-        category = os.path.basename(os.path.dirname(root))  # 상위 폴더 이름
-        problem_name = os.path.basename(root)  # 문제 폴더 이름
+        category = os.path.basename(os.path.dirname(root))  # 상위 디렉토리 이름
+        problem_name = os.path.basename(root)  # 현재 디렉토리 이름
 
-        # 중복 방지 및 카테고리 초기화
+        # README 섹션 작성
         if category not in directories:
             if category in ["백준", "프로그래머스"]:
-                content += f"## 📚 {category}\n"
+                content += f"## 📚 {category}\n| 문제번호 | 문제 이름 | 언어 |\n| ------ | --------- | ----- |\n"
             else:
                 content += f"### 🚀 {category}\n| 문제번호 | 문제 이름 | 언어 |\n| ------ | --------- | ----- |\n"
             directories.append(category)
 
-        # 문제 데이터 초기화
-        if category not in solved_problems:
-            solved_problems[category] = {}
-
-        # 파일 처리
+        # 문제 파일 탐색
         for file in files:
+            if problem_name in solved_problems:
+                continue
+
+            file_path = os.path.join(root, file)
+            relative_path = os.path.relpath(file_path, start=".")
+            file_link = f"[{file}]({quote(relative_path)})"
+
+            # 파일 확장자로 언어 확인
             file_ext = os.path.splitext(file)[-1].lower()
             language = LANGUAGE_MAP.get(file_ext, "기타")
 
-            # 상대 경로 및 링크 생성
-            relative_path = os.path.relpath(os.path.join(root, file), start=".")
-            file_link = f"[{file}]({quote(relative_path)})"
+            # 문제 정보 추가
+            content += f"| {problem_name} | {problem_name} | {language}: {file_link} |\n"
+            solved_problems.append(problem_name)
 
-            # 문제별 언어 추가
-            if problem_name not in solved_problems[category]:
-                solved_problems[category][problem_name] = {"languages": []}
-            solved_problems[category][problem_name]["languages"].append((language, file_link))
-
-    # README 내용 작성
-    for category, problems in solved_problems.items():
-        for problem, data in problems.items():
-            languages = " / ".join(f"{lang}: {link}" for lang, link in data["languages"])
-            content += f"| {problem} | {problem} | {languages} |\n"
-
-    # README 파일 쓰기
+    # README 파일 작성
     readme_path = "README.md"
     previous_hash = calculate_file_hash(readme_path)
+
+    if not os.path.exists(readme_path):
+        print(f"{readme_path} not found. Creating new README file...")
 
     with open(readme_path, "w") as f:
         f.write(content)
@@ -109,8 +104,26 @@ def main():
     print("README.md has been updated successfully.")
     return True
 
+
+def commit_and_push():
+    """변경된 README.md 파일을 Git에 커밋하고 원격 저장소에 푸시합니다."""
+    try:
+        print("Adding README.md to Git...")
+        subprocess.run(["git", "add", "README.md"], check=True)
+
+        print("Committing changes...")
+        subprocess.run(["git", "commit", "-m", "Update README.md"], check=True)
+
+        print("Pushing to remote repository...")
+        subprocess.run(["git", "push"], check=True)
+        print("Changes have been pushed to GitHub successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred during Git operation: {e}")
+        print("Check Git setup or permissions and retry.")
+
+
 if __name__ == "__main__":
-    if main():
-        print("README updated. You can add the commit and push logic here.")
+    if generate_readme():
+        commit_and_push()
     else:
         print("No updates were made to README.md.")
