@@ -1,18 +1,24 @@
 name: Auto Update README
 
 on:
+  push:
+    branches:
+      - main
   schedule:
-    - cron: '0 0 * * *' # 매일 자정 실행
+    - cron: '0 0 * * *'
 
 jobs:
   update-readme:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Python 3.10
+        run: |
+          sudo apt update
+          sudo apt install -y python3.10 python3.10-distutils
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -24,19 +30,19 @@ jobs:
           if [ -f "requirements.txt" ]; then
             pip install -r requirements.txt
           else
-            echo "No requirements.txt found. Skipping dependencies."
-      
-      - name: Run update.py
+            echo "requirements.txt not found, installing default dependencies"
+            pip install requests pandas
+
+      - name: README
         run: python update.py
 
-      - name: Commit and push changes
+      - name: Commit changes
         run: |
           git config --global user.name "github nickname"
           git config --global user.email "github email"
-          git diff
           if ! git diff --quiet; then
-            git add README.md
+            git add -A
             git commit -m "auto update README.md"
             git push
           else
-            echo "No changes to commit."
+            echo "No changes to commit"
