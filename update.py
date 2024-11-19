@@ -13,7 +13,19 @@ LANGUAGE_MAP = {
     ".py": "Python",
     ".cpp": "C++",
     ".java": "Java",
+    ".kt": "Kotlin",
+    ".js": "JavaScript",
+    ".ts": "TypeScript",
+    ".go": "Go",
     ".rs": "Rust",
+    ".cs": "C#",
+    ".rb": "Ruby",
+    ".swift": "Swift",
+    ".php": "PHP",
+    ".c": "C",
+    ".m": "Objective-C",
+    ".r": "R",
+    ".sql : SQL,
 }
 
 def calculate_file_hash(file_path):
@@ -33,7 +45,7 @@ def split_problem_name(problem_name):
     if ". " in problem_name:
         number, name = problem_name.split(". ", 1)
     else:
-        number, name = problem_name, problem_name
+        number, name = problem_name, ""
     return number, name
 
 def generate_readme():
@@ -64,6 +76,7 @@ def generate_readme():
                 directories.append(category)
 
         # 문제 파일 탐색
+        language_links = []
         for file in files:
             if file == "README.md":  # README.md는 문제 이름에만 사용
                 continue
@@ -73,7 +86,9 @@ def generate_readme():
             relative_path = os.path.relpath(file_path, start=".")
             file_ext = os.path.splitext(file)[-1].lower()
             language = LANGUAGE_MAP.get(file_ext, "기타")
+            language_links.append(f"[{language}]({quote(relative_path)})")
 
+        if language_links:
             # README.md 링크 생성
             readme_path = os.path.join(root, "README.md")
             if os.path.exists(readme_path):
@@ -82,8 +97,7 @@ def generate_readme():
                 problem_name_link = problem_name
 
             # 문제 정보 추가
-            language_with_link = f"[{language}]({quote(relative_path)})"
-            content += f"| {problem_number} | {problem_name_link} | {language_with_link} |\n"
+            content += f"| {problem_number} | {problem_name_link} | {', '.join(language_links)} |\n"
             solved_problems.append(problem_dir)
 
     # README 파일 작성
