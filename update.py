@@ -77,9 +77,11 @@ def generate_readme():
     디렉토리 및 파일을 탐색하여 README.md를 생성합니다.
     """
     content = HEADER
-    directories = []  # 섹션별 디렉토리 목록 저장
     solved_problems = []  # 이미 처리된 문제 목록
-    problems_by_difficulty = {}  # 난이도별 문제를 저장할 딕셔너리
+    problems_by_category = {
+        "백준": {difficulty: [] for difficulty in BOJ_DIFFICULTY_ORDER},
+        "프로그래머스": {level: [] for level in PROGRAMMERS_DIFFICULTY_ORDER}
+    }
 
     for root, dirs, files in os.walk("."):
         dirs.sort()  # 디렉토리 정렬
@@ -98,32 +100,33 @@ def generate_readme():
         difficulty = extract_difficulty(problem_dir, category)
 
         # 난이도별 문제를 분류하여 저장
-        if difficulty not in problems_by_difficulty:
-            problems_by_difficulty[difficulty] = []
+        if category in problems_by_category:
+            problems_by_category[category][difficulty].append((problem_number, problem_name, files))
 
-        problems_by_difficulty[difficulty].append((problem_number, problem_name, files))
+    # 백준 및 프로그래머스 섹션 생성
+    for category, difficulties in problems_by_category.items():
+        content += f"## 📚 {category}\n"
+        for difficulty, problems in difficulties.items():
+            if problems:
+                content += f"### {difficulty}\n"
+                content += "| 문제번호 | 문제 이름 | 언어 |\n"
+                content += "| -------- | --------- | ----- |\n"
 
-    # 각 난이도별로 섹션 추가
-    for difficulty, problems in problems_by_difficulty.items():
-        content += f"### {difficulty}\n"
-        content += "| 문제번호 | 문제 이름 | 언어 |\n"
-        content += "| -------- | --------- | ----- |\n"
-
-        for problem_number, problem_name, files in problems:
-            language_links = []
-            for file in files:
-                if file == "README.md":
-                    continue
-                file_path = os.path.join(root, file)
-                relative_path = os.path.relpath(file_path, start=".")
-                file_ext = os.path.splitext(file)[-1].lower()
-                language = LANGUAGE_MAP.get(file_ext, "기타")
-                language_links.append(f"[{language}]({quote(relative_path)})")
-            
-            if language_links:
-                language_links.sort()
-                language_text = " / ".join(language_links)
-                content += f"| {problem_number} | {problem_name} | {language_text} |\n"
+                for problem_number, problem_name, files in problems:
+                    language_links = []
+                    for file in files:
+                        if file == "README.md":
+                            continue
+                        file_path = os.path.join(root, file)
+                        relative_path = os.path.relpath(file_path, start=".")
+                        file_ext = os.path.splitext(file)[-1].lower()
+                        language = LANGUAGE_MAP.get(file_ext, "기타")
+                        language_links.append(f"[{language}]({quote(relative_path)})")
+                    
+                    if language_links:
+                        language_links.sort()
+                        language_text = " / ".join(language_links)
+                        content += f"| {problem_number} | {problem_name} | {language_text} |\n"
 
     # README 파일 작성
     readme_path = "README.md"
