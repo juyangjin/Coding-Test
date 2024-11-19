@@ -29,7 +29,10 @@ LANGUAGE_MAP = {
 }
 
 # 난이도 정렬 우선순위 (백준)
-BOJ_DIFFICULTY_ORDER = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Ruby"]
+BOJ_DIFFICULTY_ORDER = ["Bronze", "Silver", "Gold", "Platinum", "Ruby"]
+
+# 프로그래머스 난이도
+PROGRAMMERS_DIFFICULTY_ORDER = ["0", "1", "2", "3", "4", "5"]
 
 def calculate_file_hash(file_path):
     """파일의 SHA256 해시값을 계산하여 반환합니다."""
@@ -66,11 +69,10 @@ def extract_difficulty(directory_name, category):
             if difficulty.lower() in directory_name.lower():
                 return difficulty
     elif category == "프로그래머스":
-        for level in range(10):  # 난이도 0부터 9까지
+        for level in PROGRAMMERS_DIFFICULTY_ORDER:
             if f"level{level}" in directory_name.lower():
-                return str(level)
-    # 난이도를 찾을 수 없을 경우 빈 문자열을 반환하도록 수정
-    return ""
+                return level
+    return ""  # 빈 문자열로 설정, 해당 디렉토리에 난이도가 없을 경우
 
 def generate_readme():
     """
@@ -95,17 +97,13 @@ def generate_readme():
         # 난이도 추출
         difficulty = extract_difficulty(problem_dir, category)
 
-        # 'Unknown' 난이도는 무시
-        if not difficulty:
-            continue
-
         # 문제 파일 탐색
         language_links = []
         for file in files:
             if file == "README.md":  # README.md는 문제 이름에만 사용
                 continue
             file_path = os.path.join(root, file)
-            relative_path = os.path.relpath(file_path, start=".") 
+            relative_path = os.path.relpath(file_path, start=".")  # 상대 경로
             file_ext = os.path.splitext(file)[-1].lower()
             language = LANGUAGE_MAP.get(file_ext, "기타")
             language_links.append(f"[{language}]({quote(relative_path)})")
