@@ -1,62 +1,88 @@
-name: Auto Update README
+#!/usr/bin/env python
+import os
+import subprocess
+from urllib.parse import quote
+import hashlib
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-  schedule:
-    - cron: "0 0 * * *" # 매일 자정 실행
+HEADER = """#
+# 백준, 프로그래머스 문제 풀이 목록
+이 저장소는 백준과 프로그래머스 문제 풀이를 정리한 저장소입니다.
+"""
 
-jobs:
-  update-readme:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.10"]
+LANGUAGE_MAP = {
+    ".py": "Python",
+    ".java": "Java",
+    ".cpp": "C++",
+    ".c": "C",
+    ".kt": "Kotlin",
+    ".sql": "SQL",
+    ".js": "JavaScript",
+    ".ts": "TypeScript",
+    ".rb": "Ruby",
+    ".go": "Go",
+    ".php": "PHP",
+    ".swift": "Swift",
+    ".sh": "Shell",
+    ".rs": "Rust",
+}
 
-    steps:
-    - uses: actions/checkout@v3
+def calculate_file_hash(file_path):
+    if not os.path.exists(file_path):
+        return None
+    with open(file_path, "rb") as f:
+        return hashlib.sha256(f.read()).hexdigest()
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
+def generate_readme():
+    print("Generating README...")
+    content = HEADER
+    problems = {}
 
-    - name: Cache Python packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
+    for root, dirs, files in os.walk("."):
+        parent_dir = os.path.basename(os.path.dirname(root))
+        if parent_dir not in ["백준", "프로그래머스"]:
+            continue
+        
+        problem_number = os.path.basename(root)
+        for file in files:
+            file_ext = os.path.splitext(file)[-1].lower()
+            language = LANGUAGE_MAP.get(file_ext, "기타")
+            file_path = os.path.join(root, file)
+            file_link = f"[{os.path.basename(file)}](/{quote(file_path)})"
+            
+            if problem_number not in problems:
+                problems[problem_number] = {"languages": {}, "solution": None}
+            
+            if file.endswith(".md"):
+                problems[problem_number]["solution"] = file_link
+            else:
+                problems[problem_number]["languages"][language] = file_link
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip || echo "Failed to upgrade pip"
-        if [ -f "requirements.txt" ]; then
-          pip install --no-cache-dir --progress-bar off --upgrade -r requirements.txt || echo "Failed to install dependencies"
-        else
-          echo "requirements.txt not found, installing default dependencies"
-          pip install --no-cache-dir --progress-bar off requests pandas || echo "Failed to install default dependencies"
-        fi
+    for problem, data in problems.items():
+        solution = data["solution"] or "없음"
+        languages = " / ".join(f"{lang}: {link}" for lang, link in data["languages"].items())
+        content += f"| {problem} | {solution} | {languages} |\n"
 
-    - name: Run update.py script
-      run: python update.py  # update.py 파일 실행
+    readme_path = "README.md"
+    previous_hash = calculate_file_hash(readme_path)
 
-    - name: Check if README.md changed
-      run: |
-        git diff --exit-code || echo "No changes detected in README.md"
-      continue-on-error: true  # 변경 사항이 없어도 워크플로우 실패 방지
+    with open(readme_path, "w") as f:
+        f.write(content)
 
-    - name: Commit changes
-      run: |
-        git config --global user.name "${{ github.actor }}"
-        git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-        git add -A
-        git commit -m "auto update README.md" || echo "No changes to commit"
+    current_hash = calculate_file_hash(readme_path)
 
-    - name: Push changes
-      run: |
-        git push "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" || echo "Push failed"
+    return previous_hash != current_hash
+
+def commit_and_push():
+    try:
+        subprocess.run(["git", "add", "README.md"], check=True)
+        subprocess.run(["git", "commit", "-m", "Update README.md"], check=True)
+        subprocess.run(["git", "push"], check=True)
+        print("Changes pushed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Git error: {e}")
+
+if __name__ == "__main__":
+    if generate_readme():
+        commit_and_push()
+    else:
+        print("No changes detected.")
