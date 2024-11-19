@@ -30,7 +30,7 @@ LANGUAGE_MAP = {
 
 # 백준 및 프로그래머스 난이도 정렬 우선순위
 BOJ_DIFFICULTY_ORDER = ["Bronze", "Silver", "Gold", "Platinum", "Ruby"]
-PROGRAMMERS_DIFFICULTY_ORDER = ["0", "1", "2", "3", "4", "5"]
+PROGRAMMERS_DIFFICULTY_ORDER = ["level0", "level1", "level2", "level3", "level4", "level5"]
 
 def calculate_file_hash(file_path):
     """파일의 SHA256 해시값을 계산하여 반환합니다."""
@@ -68,8 +68,8 @@ def extract_difficulty(directory_name, category):
                 return difficulty
     elif category == "프로그래머스":
         for level in PROGRAMMERS_DIFFICULTY_ORDER:
-            if f"level{level}" in directory_name.lower():
-                return f"level{level}"
+            if level.lower() in directory_name.lower():
+                return level
     return "Unknown"
 
 def generate_readme():
