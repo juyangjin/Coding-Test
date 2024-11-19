@@ -65,68 +65,45 @@ def generate_readme():
 
     # 최상위 디렉토리에서 백준과 프로그래머스 폴더를 처리하도록 수정
     for root, dirs, files in os.walk("."):
-        # 최상위 디렉토리는 건너뛰지 않음
-        if root == ".":
+        # 최상위 디렉토리만 처리, 하위 디렉토리부터 처리
+        if os.path.basename(root) not in ["백준", "프로그래머스"]:
             continue
 
-        # 최상위 디렉토리가 백준 또는 프로그래머스인 경우만 처리
-        parent_dir = os.path.basename(os.path.dirname(root))  # 부모 디렉토리(백준, 프로그래머스)
-        print(f"Root: {root}, Parent Dir: {parent_dir}")  # 디버깅: 현재 경로와 부모 디렉토리
-
-        if parent_dir not in problems:  # 백준 또는 프로그래머스 디렉토리가 아니면 건너뜀
-            continue
-
-        stage = os.path.basename(root)  # 난이도 (예: Bronze, Silver 등)
-        print(f"Stage: {stage}")  # 디버깅: 탐색된 난이도
-
-        if stage not in problems[parent_dir]:
-            problems[parent_dir][stage] = {}
+        parent_dir = os.path.basename(root)  # "백준" 또는 "프로그래머스"
+        print(f"Processing directory: {root}, Parent dir: {parent_dir}")  # 디버깅: 현재 디렉토리
 
         for file in files:
             file_path = os.path.join(root, file)
             relative_path = os.path.relpath(file_path, start=".")
             file_link = f"[{os.path.basename(file)}]({repo_name}/{quote(relative_path)})"
-            print(f"File: {file}, Link: {file_link}")  # 디버깅: 파일 이름과 생성된 링크
+            print(f"File: {file}, Link: {file_link}")  # 디버깅: 파일 이름과 링크
 
-            problem_number = os.path.basename(os.path.dirname(root))  # 문제 번호
+            problem_number = os.path.basename(root)  # 문제 번호는 폴더명으로
 
-            if problem_number not in problems[parent_dir][stage]:
-                problems[parent_dir][stage][problem_number] = {"languages": {}, "solution": None}
+            # 문제 번호에 해당하는 데이터 구조 초기화
+            if problem_number not in problems[parent_dir]:
+                problems[parent_dir][problem_number] = {"languages": {}, "solution": None}
 
             if file.endswith(".md"):  # 해설 파일이면
-                problems[parent_dir][stage][problem_number]["solution"] = file_link
+                problems[parent_dir][problem_number]["solution"] = file_link
             else:  # 언어별 파일 처리
                 file_ext = os.path.splitext(file)[-1]
                 language = LANGUAGE_MAP.get(file_ext, "기타")
-                problems[parent_dir][stage][problem_number]["languages"][language] = file_link
+                problems[parent_dir][problem_number]["languages"][language] = file_link
 
     # README 내용 작성
-    for category, stages in problems.items():
+    for category, problems_dict in problems.items():
         content += f"## 📚 {category}\n"
 
-        sorted_stages = sorted(
-            stages.items(),
-            key=lambda x: LEVEL_PRIORITY.get(x[0], 100),
-            reverse=True
-        )
+        for problem_number, data in problems_dict.items():
+            solution_link = data["solution"] if data["solution"] else "없음"
+            language_links = " / ".join(
+                f"[{lang}]({link})" for lang, link in data["languages"].items()
+            )
+            if not language_links:
+                language_links = "없음"
 
-        for stage, problems in sorted_stages:
-            if not problems:
-                continue
-
-            content += f"### 🚀 {stage}\n"
-            content += "| 문제번호 | 해설 | 언어 |\n"
-            content += "| -------- | ---- | ---- |\n"
-
-            for problem_number, data in sorted(problems.items()):
-                solution_link = data["solution"] if data["solution"] else "없음"
-                language_links = " / ".join(
-                    f"[{lang}]({link})" for lang, link in data["languages"].items()
-                )
-                if not language_links:
-                    language_links = "없음"
-
-                content += f"| {problem_number} | {solution_link} | {language_links} |\n"
+            content += f"| {problem_number} | {solution_link} | {language_links} |\n"
 
     # README.md가 없으면 새로 만들기
     readme_path = "README.md"
