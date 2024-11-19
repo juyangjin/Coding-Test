@@ -15,8 +15,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Python 3.10
+      - name: Add deadsnakes PPA and install Python 3.10
         run: |
+          sudo apt update
+          sudo apt install -y software-properties-common
+          sudo add-apt-repository -y ppa:deadsnakes/ppa
           sudo apt update
           sudo apt install -y python3.10 python3.10-distutils
 
@@ -33,7 +36,7 @@ jobs:
             echo "requirements.txt not found, installing default dependencies"
             pip install requests pandas
 
-      - name: README
+      - name: Run README script
         run: python update.py
 
       - name: Commit changes
