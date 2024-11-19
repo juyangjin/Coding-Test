@@ -69,8 +69,9 @@ def extract_difficulty(directory_name, category):
         for level in range(10):  # 난이도 0부터 9까지
             if f"level{level}" in directory_name.lower():
                 return str(level)
-    return "Unknown"
-
+    # 난이도를 찾을 수 없을 경우 빈 문자열을 반환하도록 수정
+    return ""
+    
 def generate_readme():
     """
     디렉토리 및 파일을 탐색하여 README.md를 생성합니다.
