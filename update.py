@@ -82,23 +82,28 @@ def generate_readme():
 
             # 문제 파일 탐색
             language_links = []
+            readme_link = None  # README.md 링크 초기화
             for file in files:
-                if file == "README.md":  # README.md는 문제 이름에만 사용
-                    continue
                 file_path = os.path.join(root, file)
                 relative_path = os.path.relpath(file_path, start=".")  # 상대 경로 계산
                 file_ext = os.path.splitext(file)[-1].lower()
-                language = LANGUAGE_MAP.get(file_ext, "기타")
-                encoded_path = quote(relative_path)  # URL 인코딩
-                language_links.append(f"[{language}]({encoded_path})")
 
-            if language_links:
+                if file == "README.md":
+                    # 문제 번호에 연결할 README.md 링크 생성
+                    readme_link = f"[{problem_number}](/{quote(relative_path)})"
+                else:
+                    # 언어별 링크 생성
+                    language = LANGUAGE_MAP.get(file_ext, "기타")
+                    encoded_path = quote(relative_path)  # URL 인코딩
+                    language_links.append(f"[{language}]({encoded_path})")
+
+            if readme_link and language_links:
                 # 언어 링크를 알파벳순으로 정렬하고 슬래시로 구분
                 language_links.sort()
                 language_text = " / ".join(language_links)
 
                 # 문제 정보를 카테고리 및 난이도별로 저장
-                categories[category][difficulty].append((problem_number, problem_name, language_text))
+                categories[category][difficulty].append((readme_link, problem_name, language_text))
 
     # README 내용 작성
     for category, difficulties in categories.items():
