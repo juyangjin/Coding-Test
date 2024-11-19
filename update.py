@@ -25,12 +25,11 @@ LANGUAGE_MAP = {
     ".c": "C",
     ".m": "Objective-C",
     ".r": "R",
-    ".sql" : "SQL",
+    ".sql": "SQL",
 }
 
-# 난이도 정렬 우선순위 (백준)
+# 백준 및 프로그래머스 난이도 정렬 우선순위
 BOJ_DIFFICULTY_ORDER = ["Bronze", "Silver", "Gold", "Platinum", "Ruby"]
-# 프로그래머스 난이도
 PROGRAMMERS_DIFFICULTY_ORDER = ["0", "1", "2", "3", "4", "5"]
 
 def calculate_file_hash(file_path):
@@ -70,7 +69,7 @@ def extract_difficulty(directory_name, category):
     elif category == "프로그래머스":
         for level in PROGRAMMERS_DIFFICULTY_ORDER:
             if f"level{level}" in directory_name.lower():
-                return level
+                return f"level{level}"
     return "Unknown"
 
 def generate_readme():
@@ -98,41 +97,33 @@ def generate_readme():
         # 난이도 추출
         difficulty = extract_difficulty(problem_dir, category)
 
-        # README 섹션 작성
-        if category not in directories:
-            if category in ["백준", "프로그래머스"]:
-                content += f"## 📚 {category}\n"
-                content += f"### {difficulty}\n"  # 난이도를 바로 추가
-                content += "| 문제번호 | 문제 이름 | 언어 |\n"
-                content += "| -------- | --------- | ----- |\n"
-                directories.append(category)
+        # 난이도별 문제를 분류하여 저장
+        if difficulty not in problems_by_difficulty:
+            problems_by_difficulty[difficulty] = []
 
-        # 문제 파일 탐색
-        language_links = []
-        for file in files:
-            if file == "README.md":  # README.md는 문제 이름에만 사용
-                continue
-            file_path = os.path.join(root, file)
-            relative_path = os.path.relpath(file_path, start=".")
-            file_ext = os.path.splitext(file)[-1].lower()
-            language = LANGUAGE_MAP.get(file_ext, "기타")
-            language_links.append(f"[{language}]({quote(relative_path)})")
+        problems_by_difficulty[difficulty].append((problem_number, problem_name, files))
 
-        if language_links:
-            # 언어 링크를 알파벳순으로 정렬하고 슬래시로 구분
-            language_links.sort()
-            language_text = " / ".join(language_links)
+    # 각 난이도별로 섹션 추가
+    for difficulty, problems in problems_by_difficulty.items():
+        content += f"### {difficulty}\n"
+        content += "| 문제번호 | 문제 이름 | 언어 |\n"
+        content += "| -------- | --------- | ----- |\n"
 
-            # README.md 링크 생성
-            readme_path = os.path.join(root, "README.md")
-            if os.path.exists(readme_path):
-                problem_number_link = f"[{problem_number}]({quote(os.path.relpath(readme_path, start='.'))})"
-            else:
-                problem_number_link = problem_number
-
-            # 문제 정보 추가
-            content += f"| {problem_number_link} | {problem_name} | {language_text} |\n"
-            solved_problems.append(problem_dir)
+        for problem_number, problem_name, files in problems:
+            language_links = []
+            for file in files:
+                if file == "README.md":
+                    continue
+                file_path = os.path.join(root, file)
+                relative_path = os.path.relpath(file_path, start=".")
+                file_ext = os.path.splitext(file)[-1].lower()
+                language = LANGUAGE_MAP.get(file_ext, "기타")
+                language_links.append(f"[{language}]({quote(relative_path)})")
+            
+            if language_links:
+                language_links.sort()
+                language_text = " / ".join(language_links)
+                content += f"| {problem_number} | {problem_name} | {language_text} |\n"
 
     # README 파일 작성
     readme_path = "README.md"
