@@ -25,7 +25,7 @@ LANGUAGE_MAP = {
     ".c": "C",
     ".m": "Objective-C",
     ".r": "R",
-    ".sql : "SQL",
+    ".sql" : "SQL",
 }
 
 def calculate_file_hash(file_path):
