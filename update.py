@@ -100,9 +100,9 @@ def generate_readme():
 
     # README 내용 작성
     for category, difficulties in categories.items():
-        content += f"## 📚 {category}\n"
+        content += f"## 📚 {category}\n"  # 카테고리 헤더
         for difficulty, problems in difficulties.items():
-            content += f"### {difficulty}\n"
+            content += f"### {difficulty}\n"  # 난이도별 헤더
             content += "| 문제번호 | 문제 이름 | 언어 |\n"
             content += "| -------- | --------- | ----- |\n"
 
