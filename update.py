@@ -53,11 +53,7 @@ def generate_readme():
     디렉토리 및 파일을 탐색하여 README.md를 생성합니다.
     """
     content = HEADER
-    directories = []  # 섹션별 디렉토리 목록 저장
-    solved_problems = []  # 이미 처리된 문제 목록
-
-    # 난이도별로 문제를 저장할 딕셔너리
-    problems_by_category = {}
+    categories = {}  # 카테고리별 문제를 저장할 딕셔너리
 
     for root, dirs, files in os.walk("."):
         dirs.sort()  # 디렉토리 정렬
@@ -68,15 +64,20 @@ def generate_readme():
                     dirs.remove(exclude)
             continue
 
-        # 상위 디렉토리 이름을 난이도로 사용 (예: Bronze, Silver)
+        # 상위 디렉토리 이름을 카테고리로 사용 (백준, 프로그래머스)
         category = os.path.basename(os.path.dirname(root))
         problem_dir = os.path.basename(root)  # 문제 폴더 이름
         problem_number, problem_name = split_problem_name(problem_dir)  # 문제 번호와 문제 이름 분리
 
-        # 문제를 난이도별로 분류
-        if category not in problems_by_category:
-            problems_by_category[category] = []
-        
+        # 카테고리별로 문제들을 분류
+        if category not in categories:
+            categories[category] = {}
+
+        # 난이도별로 문제들을 분류
+        difficulty = os.path.basename(os.path.dirname(root))  # 난이도는 문제 폴더의 상위 폴더명
+        if difficulty not in categories[category]:
+            categories[category][difficulty] = []
+
         # 문제 파일 탐색
         language_links = []
         for file in files:
@@ -93,17 +94,19 @@ def generate_readme():
             language_links.sort()
             language_text = " / ".join(language_links)
 
-            # 문제 정보를 추가
-            problems_by_category[category].append((problem_number, problem_name, language_text))
+            # 문제 정보를 카테고리 및 난이도별로 저장
+            categories[category][difficulty].append((problem_number, problem_name, language_text))
 
     # README 내용 작성
-    for category, problems in problems_by_category.items():
+    for category, difficulties in categories.items():
         content += f"## 📚 {category}\n"
-        content += "| 문제번호 | 문제 이름 | 언어 |\n"
-        content += "| -------- | --------- | ----- |\n"
-        
-        for problem_number, problem_name, language_text in problems:
-            content += f"| {problem_number} | {problem_name} | {language_text} |\n"
+        for difficulty, problems in difficulties.items():
+            content += f"### {difficulty}\n"
+            content += "| 문제번호 | 문제 이름 | 언어 |\n"
+            content += "| -------- | --------- | ----- |\n"
+
+            for problem_number, problem_name, language_text in problems:
+                content += f"| {problem_number} | {problem_name} | {language_text} |\n"
 
     # README 파일 작성
     with open("README.md", "w") as f:
