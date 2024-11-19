@@ -92,18 +92,19 @@ def generate_readme():
             language_links.append(f"[{language}]({quote(relative_path)})")
 
         if language_links:
-            # 언어 링크를 알파벳순으로 정렬
+            # 언어 링크를 알파벳순으로 정렬하고 슬래시로 구분
             language_links.sort()
+            language_text = " / ".join(language_links)
 
             # README.md 링크 생성
             readme_path = os.path.join(root, "README.md")
             if os.path.exists(readme_path):
-                problem_name_link = f"[{problem_name}]({quote(os.path.relpath(readme_path, start='.'))})"
+                problem_number_link = f"[{problem_number}]({quote(os.path.relpath(readme_path, start='.'))})"
             else:
-                problem_name_link = problem_name
+                problem_number_link = problem_number
 
             # 문제 정보 추가
-            content += f"| {problem_number} | {problem_name_link} | {', '.join(language_links)} |\n"
+            content += f"| {problem_number_link} | {problem_name} | {language_text} |\n"
             solved_problems.append(problem_dir)
 
     # README 파일 작성
