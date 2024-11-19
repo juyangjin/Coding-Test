@@ -25,7 +25,6 @@ LANGUAGE_MAP = {
     ".c": "C",
     ".m": "Objective-C",
     ".r": "R",
-    ".sql" : "SQL",
 }
 
 def calculate_file_hash(file_path):
@@ -44,6 +43,9 @@ def split_problem_name(problem_name):
     """
     if ". " in problem_name:
         number, name = problem_name.split(". ", 1)
+    elif "." in problem_name:
+        number, name = problem_name.split(".", 1)
+        name = name.strip()  # 이름 앞뒤 공백 제거
     else:
         number, name = problem_name, ""
     return number, name
@@ -89,6 +91,9 @@ def generate_readme():
             language_links.append(f"[{language}]({quote(relative_path)})")
 
         if language_links:
+            # 언어 링크를 알파벳순으로 정렬
+            language_links.sort()
+
             # README.md 링크 생성
             readme_path = os.path.join(root, "README.md")
             if os.path.exists(readme_path):
