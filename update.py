@@ -102,7 +102,13 @@ def generate_readme():
     for category, difficulties in categories.items():
         content += f"## 📚 {category}\n"  # 카테고리 헤더
         for difficulty, problems in difficulties.items():
-            content += f"### {difficulty}\n"  # 난이도별 헤더
+            # 난이도 아이콘 설정
+            if category == "백준":
+                icon = "🚀"  # 백준은 로켓 아이콘
+            else:
+                icon = "⭐"  # 프로그래머스는 별 아이콘
+
+            content += f"### {icon} {difficulty}\n"  # 난이도별 아이콘 추가
             content += "| 문제번호 | 문제 이름 | 언어 |\n"
             content += "| -------- | --------- | ----- |\n"
 
