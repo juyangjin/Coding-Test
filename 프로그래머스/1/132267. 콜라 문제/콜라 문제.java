@@ -1,14 +1,14 @@
 class Solution {
+    public int coke(int a, int b, int n){
+        return (n / a) * b;
+    }
+    
     public int solution(int a, int b, int n) {
-        int answer = 0;
-        int tmp = 0;
+        int answer = 0;        
         while(n >= a){
-            if(n % a != 0) tmp += n % a;
-            answer += (n / a) * b;
+            answer += coke(a,b,n);
             n = (n / a) * b + (n % a);
         }
-
-        
         return answer;
     }
 }
